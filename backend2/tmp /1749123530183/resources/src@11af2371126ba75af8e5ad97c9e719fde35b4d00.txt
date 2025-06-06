@@ -1,0 +1,108 @@
+import { COMMON_SELECTORS, CustomCommands } from "@neetoplaywright";
+import { Page, expect } from "@playwright/test";
+import { TFunction } from "i18next";
+
+import { CLIENT_SELECTORS } from "@constants/selectors";
+
+import { AddClientViaUIProps } from "./types";
+
+export default class ClientPage {
+  page: Page;
+  neetoPlaywrightUtilities: CustomCommands;
+  t: TFunction;
+  constructor(
+    page: Page,
+    neetoPlaywrightUtilities: CustomCommands,
+    t: TFunction
+  ) {
+    this.page = page;
+    this.neetoPlaywrightUtilities = neetoPlaywrightUtilities;
+    this.t = t;
+  }
+
+  addClientViaUI = async ({
+    clientName,
+    clientSecondaryName = "",
+    address = "",
+    notes = "",
+  }: AddClientViaUIProps) => {
+    await this.page.getByTestId(CLIENT_SELECTORS.newButton).click();
+    await this.page
+      .getByTestId(CLIENT_SELECTORS.nameTextField)
+      .fill(clientName);
+
+    await this.page
+      .getByTestId(CLIENT_SELECTORS.secondaryNameTextField)
+      .fill(clientSecondaryName);
+
+    await this.page
+      .getByTestId(CLIENT_SELECTORS.addressLineOneTextField)
+      .fill(address);
+
+    await this.page
+      .getByTestId(CLIENT_SELECTORS.internalNotesTextArea)
+      .fill(notes);
+    await this.page.getByTestId(CLIENT_SELECTORS.submitButton).click();
+    await this.neetoPlaywrightUtilities.waitForPageLoad();
+  };
+
+  searchAndVerifyClient = async (clientName: string) => {
+    const searchInput = this.page.getByTestId(COMMON_SELECTORS.inputField);
+
+    await searchInput.fill(clientName);
+
+    await expect(
+      this.page.getByTestId(COMMON_SELECTORS.subheaderText)
+    ).toContainText(this.t("common.countOf.clients", { count: 1 }));
+
+    await expect(
+      this.page.getByRole("cell", { name: clientName })
+    ).toBeVisible();
+  };
+
+  archiveClientAndVerify = async (clientName: string) => {
+    await this.searchAndVerifyClient(clientName);
+    await this.page
+      .getByRole("cell", { name: clientName })
+      .getByTestId(COMMON_SELECTORS.dropdownIcon)
+      .click();
+
+    await this.page
+      .getByRole("button", { name: this.t("common.archive") })
+      .click();
+
+    await this.page
+      .getByTestId(COMMON_SELECTORS.alertModalSubmitButton)
+      .click();
+
+    await this.page.goto("/admin/clients?primary-filter=archived");
+    await this.neetoPlaywrightUtilities.waitForPageLoad();
+    await this.searchAndVerifyClient(clientName);
+  };
+
+  unarchiveClientAndVerify = async (clientName: string) => {
+    await this.searchAndVerifyClient(clientName);
+    await this.page
+      .getByRole("cell", { name: clientName })
+      .getByTestId(COMMON_SELECTORS.dropdownIcon)
+      .click();
+
+    await this.page
+      .getByRole("button", { name: this.t("common.unarchive") })
+      .click();
+
+    await this.page
+      .getByTestId(COMMON_SELECTORS.alertModalSubmitButton)
+      .click();
+    await this.neetoPlaywrightUtilities.waitForPageLoad();
+
+    await this.page.goto("/admin/clients?primary-filter=active");
+    await this.searchAndVerifyClient(clientName);
+  };
+
+  navigateToClientsTab = async () => {
+    await this.page.getByTestId(CLIENT_SELECTORS.navTab).click();
+
+    await this.neetoPlaywrightUtilities.waitForPageLoad();
+  };
+}

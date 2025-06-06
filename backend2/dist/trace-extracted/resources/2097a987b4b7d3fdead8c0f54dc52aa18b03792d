@@ -1,0 +1,390 @@
+# Test info
+
+- Name: Inbox conversation page >> should verify name - add, edit from right sidebar
+- Location: /home/neetoci/neeto-chat-web/playwright-tests/e2e/tests/inbox/conversations.spec.ts:586:7
+
+# Error details
+
+```
+Error: Timed out 10000ms waiting for expect(locator).toContainText(expected)
+
+Locator: locator('.Toastify__toast-icon')
+Expected string: "👍"
+Received: <element(s) not found>
+Call log:
+  - expect.toContainText with timeout 10000ms
+  - waiting for locator('.Toastify__toast-icon')
+
+    at CustomCommands.verifyToast (/home/neetoci/neeto-chat-web/playwright-tests/node_modules/@bigbinary/neeto-playwright-commons/build/compiled/utils/commands.js:58:41)
+    at /home/neetoci/neeto-chat-web/playwright-tests/e2e/tests/inbox/conversations.spec.ts:652:40
+    at /home/neetoci/neeto-chat-web/playwright-tests/e2e/tests/inbox/conversations.spec.ts:633:5
+```
+
+# Page snapshot
+
+```yaml
+- button "AO":
+  - paragraph: AO
+  - img
+- link:
+  - /url: /
+  - img
+- link "Inbox":
+  - /url: /admin/widget/inbox/8fbcaeac-e5e0-4cef-a6d2-c4ad06597d8e?filter_by=unresolved
+  - img
+  - text: Inbox
+  - img
+- link "Unresolved 4":
+  - /url: /admin/widget/inbox?filter_by=unresolved
+- link "Assigned to me 0":
+  - /url: /admin/widget/inbox?filter_by=assigned_to_me
+- link "Unassigned 4":
+  - /url: /admin/widget/inbox?filter_by=unassigned
+- link "Assigned 0":
+  - /url: /admin/widget/inbox?filter_by=assigned
+- link "Mentioned 0":
+  - /url: /admin/widget/inbox?filter_by=mentioned
+- link "Waiting on customer 1":
+  - /url: /admin/widget/inbox?filter_by=waiting_on_customer
+- link "Closed 1":
+  - /url: /admin/widget/inbox?filter_by=closed
+- link "Spam 0":
+  - /url: /admin/widget/inbox?filter_by=spam
+- link "Trash 0":
+  - /url: /admin/widget/inbox?filter_by=trash
+- link "All 5":
+  - /url: /admin/widget/inbox?filter_by=all
+- link "Contacts":
+  - /url: /admin/contacts?filter_by=all
+  - img
+  - text: Contacts
+  - img
+- link "Team members":
+  - /url: /admin/members
+  - img
+  - text: Team members
+- link "Admin panel":
+  - /url: /admin/admin-panel
+  - img
+  - text: Admin panel
+- link "My preferences":
+  - /url: /admin/my-preferences
+  - img
+  - text: My preferences
+- button:
+  - img
+- heading "Unresolved" [level=2]:
+  - text: Unresolved
+  - button:
+    - img
+- text: Newest
+- combobox
+- button
+- img
+- searchbox "Name, email or messages": madeline94@gmail.com
+- button "Close search"
+- button "Adrian Ortiz a few seconds ago Attonbitus amaritudo paulatim peccatus calamitas aegre traho valetudo votum."
+- button "Arturo Heathcote III a few seconds ago Corrupti textilis illo arguo maxime verto nostrum suasoria aetas laboriosam."
+- button "Grant Corwin a few seconds ago Templum villa pecco demergo vesper aliquid."
+- button "madeline94@gmail.com a few seconds ago Enim natus nesciunt optio vitiosus cribro."
+- paragraph: madeline94@gmail.com
+- textbox "Add ticket title"
+- button
+- paragraph:
+  - text: This ticket started at
+  - link "unknown":
+    - /url: https://neeto.com/neetochat
+  - text: a few seconds ago
+- img
+- text: Enim natus nesciunt optio vitiosus cribro. a few seconds ago. Seen. Auto reply
+- textbox "editor-content":
+  - paragraph
+- button "Chat"
+- button "Note"
+- button
+- button
+- button
+- button
+- button
+- button "Send" [disabled]
+- heading "Details" [level=5]
+- paragraph: Status
+- paragraph: New
+- img
+- paragraph: Priority
+- heading "Low" [level=5]
+- img
+- paragraph: Group
+- heading "--" [level=5]
+- img
+- paragraph: Assignee
+- heading "--" [level=5]
+- img
+- img
+- paragraph: madeline94@gmail.com
+- button
+- img
+- paragraph: madeline94@gmail.com
+- button
+- img
+- paragraph: "-"
+- button
+- img
+- paragraph: Asia/Kolkata
+- img
+- paragraph: Windows
+- img
+- paragraph: Chrome
+- button "View more"
+- button "Create NeetoDesk ticket"
+- heading "Tags" [level=5]:
+  - heading "Tags" [level=5]
+- button
+- heading "Notes" [level=5]:
+  - heading "Notes" [level=5]
+- button
+- heading "Keyboard shortcuts" [level=4]
+- button
+- heading "GLOBAL" [level=6]
+- paragraph: See keyboard shortcuts
+- text: shift /
+- paragraph: Close modals, panes
+- text: esc
+- paragraph: Submit form or text input
+- text: ctrl enter
+- heading "NeetoChat specific" [level=6]
+- paragraph: Close ticket
+- text: ctrl alt y
+- paragraph: Add canned responses
+- text: ctrl alt r
+- paragraph: Attach NeetoKB article
+- text: ctrl alt a
+- paragraph: Add gif
+- text: ctrl alt g
+- paragraph: Add image
+- text: ctrl alt k
+- paragraph: Add video
+- text: ctrl alt v
+- paragraph: Switch to chat(while typing in note)
+- text: ctrl alt c
+- paragraph: Switch to note(while typing in chat)
+- text: ctrl alt n
+- paragraph: Save title
+- text: enter
+- paragraph: Cancel edit
+- text: esc
+- heading "Workflow builder" [level=6]
+- paragraph: Delete node or edge(based on selection)
+- text: Delete
+- paragraph: Save new button label(while renaming button)
+- text: enter
+- paragraph: Cancel button renaming
+- text: esc
+```
+
+# Test source
+
+```ts
+  552 |             )
+  553 |           )
+  554 |           .click();
+  555 |
+  556 |         await neetoPlaywrightUtilities.verifyToast();
+  557 |
+  558 |         await page
+  559 |           .getByTestId(INBOX_MENU.inboxMenuTab(t("labels.waitingOnCustomer")))
+  560 |           .click();
+  561 |         await conversationsPage.openConversationFromList(contact.name);
+  562 |
+  563 |         await expect(
+  564 |           page.getByTestId(CONVERSATIONS_SELECTORS.conversationStatus)
+  565 |         ).toHaveText(t("labels.waitingOnCustomer"));
+  566 |       }
+  567 |     );
+  568 |
+  569 |     await test.step("Step 3: Revert conversation status", async () => {
+  570 |       await page
+  571 |         .getByTestId(CONVERSATIONS_SELECTORS.conversationStatus)
+  572 |         .click();
+  573 |
+  574 |       await page
+  575 |         .getByTestId(CONVERSATIONS_SELECTORS.statusListItem(t("labels.open")))
+  576 |         .click();
+  577 |
+  578 |       await neetoPlaywrightUtilities.verifyToast();
+  579 |
+  580 |       await expect(
+  581 |         page.getByTestId(CONVERSATIONS_SELECTORS.conversationStatus)
+  582 |       ).toHaveText(t("labels.open"));
+  583 |     });
+  584 |   });
+  585 |
+  586 |   test("should verify name - add, edit from right sidebar", async ({
+  587 |     page,
+  588 |     conversationsPage,
+  589 |     contactsPage,
+  590 |     contactApis,
+  591 |     conversationsApis,
+  592 |     neetoPlaywrightUtilities,
+  593 |   }) => {
+  594 |     const newContact = {
+  595 |       email: faker.internet.email(),
+  596 |       visitorToken: faker.string.uuid(),
+  597 |     };
+  598 |     const newContactName = faker.person.fullName();
+  599 |
+  600 |     await test.step("Step 2: Update contact name with valid name", async () => {
+  601 |       const contactName = faker.person.fullName();
+  602 |       await conversationsPage.openConversationFromList(contact.name);
+  603 |
+  604 |       await page
+  605 |         .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.nameValue)
+  606 |         .click();
+  607 |
+  608 |       await page
+  609 |         .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.inputName)
+  610 |         .fill(contactName);
+  611 |
+  612 |       await page
+  613 |         .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.submitNameIcon)
+  614 |         .click();
+  615 |
+  616 |       await expect(
+  617 |         page.getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.nameValue)
+  618 |       ).toHaveText(contactName);
+  619 |     });
+  620 |
+  621 |     await test.step("Step 3: Create new contact without name", async () => {
+  622 |       await contactApis.createVisitor(newContact);
+  623 |
+  624 |       const newContactVisitorToken = await contactsPage.getVisitorToken({
+  625 |         visitor: newContact.email.toLowerCase(),
+  626 |       });
+  627 |
+  628 |       await conversationsApis.createWidgetConversation({
+  629 |         visitorToken: newContactVisitorToken,
+  630 |       });
+  631 |     });
+  632 |
+  633 |     await test.step(
+  634 |       "Step 4: Set name for contact via conversation right-sidebar",
+  635 |       async () => {
+  636 |         await page
+  637 |           .getByTestId(CONVERSATIONS_SELECTORS.searchConversationButton)
+  638 |           .click();
+  639 |
+  640 |         await page
+  641 |           .getByTestId(CONVERSATIONS_SELECTORS.searchConversationTextField)
+  642 |           .fill(newContact.email.toLowerCase());
+  643 |
+  644 |         await page.waitForLoadState();
+  645 |
+  646 |         await expect(
+  647 |           page.getByTestId(CONVERSATIONS_SELECTORS.conversations)
+  648 |         ).toHaveCount(1);
+  649 |
+  650 |         await page.getByTestId(CONVERSATIONS_SELECTORS.conversations).click();
+  651 |
+> 652 |         await neetoPlaywrightUtilities.verifyToast();
+      |                                        ^ Error: Timed out 10000ms waiting for expect(locator).toContainText(expected)
+  653 |
+  654 |         await page
+  655 |           .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.nameValue)
+  656 |           .click();
+  657 |
+  658 |         await page
+  659 |           .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.inputName)
+  660 |           .fill(newContactName);
+  661 |
+  662 |         await page
+  663 |           .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.submitNameIcon)
+  664 |           .click();
+  665 |
+  666 |         await expect(
+  667 |           page.getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.nameValue)
+  668 |         ).toHaveText(newContactName);
+  669 |       }
+  670 |     );
+  671 |
+  672 |     await test.step("Step 5: Start editing name and cancel", async () => {
+  673 |       await page
+  674 |         .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.nameValue)
+  675 |         .click();
+  676 |
+  677 |       await page
+  678 |         .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.inputName)
+  679 |         .fill(faker.word.words(2));
+  680 |
+  681 |       await page
+  682 |         .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.cancelNameIcon)
+  683 |         .click();
+  684 |
+  685 |       await expect(
+  686 |         page.getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.nameValue)
+  687 |       ).toHaveText(newContactName);
+  688 |     });
+  689 |   });
+  690 |
+  691 |   test("should verify email - add, edit from right sidebar", async ({
+  692 |     page,
+  693 |     conversationsPage,
+  694 |   }) => {
+  695 |     const newEmail = faker.internet.email();
+  696 |
+  697 |     await test.step(
+  698 |       "Step 2: Type incomplete email and hit cancel button",
+  699 |       async () => {
+  700 |         await conversationsPage.openConversationFromList(contact.name);
+  701 |
+  702 |         await page
+  703 |           .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.emailValue)
+  704 |           .click();
+  705 |
+  706 |         await page
+  707 |           .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.emailInput)
+  708 |           .fill(faker.word.words(1));
+  709 |
+  710 |         await page
+  711 |           .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.cancelEmailIcon)
+  712 |           .click();
+  713 |
+  714 |         await expect(
+  715 |           page.getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.emailValue)
+  716 |         ).toContainText(contact.email.toLowerCase());
+  717 |       }
+  718 |     );
+  719 |
+  720 |     await test.step("Step 3: Set valid email for contact", async () => {
+  721 |       await page
+  722 |         .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.emailValue)
+  723 |         .click();
+  724 |
+  725 |       await page
+  726 |         .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.emailInput)
+  727 |         .fill(newEmail.toLowerCase());
+  728 |
+  729 |       await page
+  730 |         .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.submitEmailIcon)
+  731 |         .click();
+  732 |
+  733 |       await expect(
+  734 |         page.getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.emailValue)
+  735 |       ).toHaveText(newEmail.toLowerCase());
+  736 |     });
+  737 |
+  738 |     await test.step("Step 4: Start editing email and cancel", async () => {
+  739 |       await page
+  740 |         .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.emailValue)
+  741 |         .click();
+  742 |
+  743 |       await expect(
+  744 |         page.getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.emailInput)
+  745 |       ).toHaveValue(newEmail.toLowerCase());
+  746 |
+  747 |       await page
+  748 |         .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.emailInput)
+  749 |         .fill(faker.internet.email());
+  750 |
+  751 |       await page
+  752 |         .getByTestId(CONVERSATIONS_SELECTORS.rightSidebar.cancelEmailIcon)
+```

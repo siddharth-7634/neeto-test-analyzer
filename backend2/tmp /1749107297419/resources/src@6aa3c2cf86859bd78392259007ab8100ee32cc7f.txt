@@ -1,0 +1,189 @@
+import {
+  COMMON_SELECTORS,
+  CustomCommands,
+  MailerUtils,
+  tableUtils,
+} from "@neetoplaywright";
+import { Page, expect } from "@playwright/test";
+import { TFunction } from "i18next";
+import { getI18nInstance } from "playwright-i18next-fixture";
+
+import { INVOICES_SELECTORS } from "@selectors";
+
+import {
+  AddServiceEntryParams,
+  InvoicePageConstructorParams,
+  StartInvoiceCreationParams,
+  VerifyInvoiceParams,
+} from "./types";
+
+export default class InvoicePage {
+  page: Page;
+  mailerUtils: MailerUtils;
+  neetoPlaywrightUtilities: CustomCommands;
+  t: TFunction;
+
+  constructor({
+    page,
+    neetoPlaywrightUtilities,
+    mailerUtils,
+  }: InvoicePageConstructorParams) {
+    this.page = page;
+    this.neetoPlaywrightUtilities = neetoPlaywrightUtilities;
+    this.mailerUtils = mailerUtils;
+    this.t = getI18nInstance().t;
+  }
+
+  startInvoiceCreation = async ({
+    clientName,
+    projectName,
+  }: StartInvoiceCreationParams) => {
+    await this.page.getByTestId(INVOICES_SELECTORS.navTab).click();
+    await this.page.getByTestId(INVOICES_SELECTORS.addNewButton).click();
+    await this.page.getByRole("link", { name: clientName }).click();
+
+    await expect(this.page.getByTestId(COMMON_SELECTORS.heading)).toHaveText(
+      this.t("invoices.selectProjectAndInterval")
+    );
+    await this.page.getByLabel(projectName).check();
+    await this.page
+      .getByTestId(INVOICES_SELECTORS.projectAndIntervalProceedButton)
+      .click();
+  };
+
+  addServiceEntry = async ({
+    quantity,
+    price,
+    notes,
+    totalCost,
+  }: AddServiceEntryParams) => {
+    await this.page
+      .getByRole("button", { name: this.t("invoices.serviceEntry.addNew") })
+      .click();
+
+    await this.page
+      .getByTestId(INVOICES_SELECTORS.serviceEntryTextField("notes"))
+      .fill(notes);
+
+    await this.page
+      .getByTestId(INVOICES_SELECTORS.serviceEntryTextField("quantity"))
+      .fill(quantity);
+
+    await this.page
+      .getByTestId(INVOICES_SELECTORS.serviceEntryTextField("unit-price"))
+      .fill(price);
+
+    await expect(
+      this.page.getByRole("heading", { name: totalCost })
+    ).toBeVisible();
+
+    await this.page
+      .getByTestId(INVOICES_SELECTORS.serviceEntrySaveChangesButton)
+      .click();
+  };
+
+  generateInvoice = async () => {
+    await this.page
+      .getByTestId(INVOICES_SELECTORS.generateInvoiceButton)
+      .click();
+
+    await expect(
+      this.page.getByTestId(COMMON_SELECTORS.pageLoader)
+    ).toHaveCount(0);
+  };
+
+  sendInvoiceAndGetLtsInvoice = async (clientName: string) => {
+    await this.page
+      .getByRole("button", { name: this.t("common.sendInvoice") })
+      .click();
+
+    await expect(
+      this.page.getByTestId(COMMON_SELECTORS.paneHeader)
+    ).toContainText(this.t("invoice.send.title"));
+
+    await this.page
+      .getByRole("button", { name: this.t("common.addNew.recipient") })
+      .click();
+
+    const clientEmail = this.mailerUtils.generateRandomEmail();
+    await this.page
+      .getByTestId(INVOICES_SELECTORS.inputField("name"))
+      .fill(clientName);
+
+    await this.page
+      .getByTestId(INVOICES_SELECTORS.inputField("email"))
+      .fill(clientEmail);
+
+    await this.page
+      .getByRole("button", { name: this.t("common.saveRecipient") })
+      .click();
+
+    await expect(
+      this.page.getByTestId(
+        INVOICES_SELECTORS.checkboxInput(`${clientName}-(${clientEmail})`)
+      )
+    ).toBeChecked();
+
+    const invoiceTrigger = new Date();
+    await this.page
+      .getByTestId(COMMON_SELECTORS.pane)
+      .getByRole("button", { name: this.t("common.sendInvoice") })
+      .click();
+
+    await this.neetoPlaywrightUtilities.waitForPageLoad();
+
+    const email = await this.mailerUtils.findMessage(
+      { to: clientEmail },
+      { timeout: 30_000, receivedAfter: invoiceTrigger }
+    );
+
+    return email.text.links[1];
+  };
+
+  verifyInvoice = async ({
+    page = this.page,
+    clientName,
+    tableCells,
+    totalCost,
+  }: VerifyInvoiceParams) => {
+    await this.neetoPlaywrightUtilities.waitForPageLoad();
+    await expect(page.getByTestId(INVOICES_SELECTORS.clientName)).toHaveText(
+      clientName
+    );
+
+    await tableUtils.verifyTableColumnsExistence({
+      page: this.page,
+      columnNames: [
+        this.t("common.notes"),
+        this.t("common.unitPrice"),
+        this.t("common.quantity"),
+        this.t("common.total"),
+      ],
+    });
+
+    await Promise.all(
+      tableCells.map(name =>
+        expect(page.getByRole("cell", { name, exact: true })).toBeVisible()
+      )
+    );
+
+    await expect(
+      page.getByTestId(INVOICES_SELECTORS.grandTotalAmount)
+    ).toHaveText(totalCost);
+  };
+
+  deleteInvoice = async () => {
+    await this.page.getByTestId(INVOICES_SELECTORS.actionsDropdownIcon).click();
+    await this.page.getByTestId(INVOICES_SELECTORS.deleteLink).click();
+
+    await this.page
+      .getByTestId(COMMON_SELECTORS.alertModalSubmitButton)
+      .click();
+  };
+
+  usdCurrencyFormat = (amount: number) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(amount);
+}

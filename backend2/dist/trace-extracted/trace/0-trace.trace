@@ -1,0 +1,51 @@
+{"version":7,"type":"context-options","origin":"library","browserName":"","options":{},"platform":"linux","wallTime":1748880207509,"monotonicTime":69304.868,"sdkLanguage":"javascript","contextId":"request-context@bdcda13f288a2f6b5e78c4cc59dea4d6","title":"invoice.spec.ts:28 › Verify invoices › should verify client receives invoice email and invoice link"}
+{"type":"before","callId":"call@74","startTime":72148.41,"apiName":"apiRequestContext.get","class":"APIRequestContext","method":"fetch","params":{"url":"https://api.fastmail.com/.well-known/jmap","method":"GET","headers":[{"name":"Content-Type","value":"application/json"},{"name":"Authorization","value":"Bearer fmu1-1636404b-c8cbd9afcaead4e3278c6df4220fbe9b-0-9dd0aeaeec9f6a3b2c0e8fb3d6f54112"},{"name":"accept-encoding","value":"gzip"},{"name":"x-csrf-token","value":"Bjl-OVMHHQ5Aq62aTjXUS4q7w7n6zgnjWDI8q07VFuGgB0HedUkCR_hsZEFfzYnIb7y88q5yE8XcRWP-DIVf8Q"}],"failOnStatusCode":true},"stepId":"pw:api@40","beforeSnapshot":"before@call@74"}
+{"type":"log","callId":"call@74","time":72156.058,"message":"→ GET https://api.fastmail.com/.well-known/jmap"}
+{"type":"log","callId":"call@74","time":72156.081,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.7103.25 Safari/537.36"}
+{"type":"log","callId":"call@74","time":72156.087,"message":"  accept: */*"}
+{"type":"log","callId":"call@74","time":72156.09,"message":"  accept-encoding: gzip"}
+{"type":"log","callId":"call@74","time":72156.093,"message":"  Content-Type: application/json"}
+{"type":"log","callId":"call@74","time":72156.097,"message":"  Authorization: Bearer fmu1-1636404b-c8cbd9afcaead4e3278c6df4220fbe9b-0-9dd0aeaeec9f6a3b2c0e8fb3d6f54112"}
+{"type":"log","callId":"call@74","time":72156.1,"message":"  x-csrf-token: Bjl-OVMHHQ5Aq62aTjXUS4q7w7n6zgnjWDI8q07VFuGgB0HedUkCR_hsZEFfzYnIb7y88q5yE8XcRWP-DIVf8Q"}
+{"type":"log","callId":"call@74","time":72218.711,"message":"← 302 Moved Temporarily"}
+{"type":"log","callId":"call@74","time":72218.728,"message":"  server: nginx"}
+{"type":"log","callId":"call@74","time":72218.734,"message":"  date: Mon, 02 Jun 2025 16:03:30 GMT"}
+{"type":"log","callId":"call@74","time":72218.738,"message":"  content-type: text/html"}
+{"type":"log","callId":"call@74","time":72218.741,"message":"  content-length: 138"}
+{"type":"log","callId":"call@74","time":72218.744,"message":"  location: https://api.fastmail.com/jmap/session"}
+{"type":"log","callId":"call@74","time":72218.748,"message":"  connection: keep-alive"}
+{"type":"log","callId":"call@74","time":72218.751,"message":"  x-frontend: phl-frontend-02"}
+{"type":"log","callId":"call@74","time":72218.754,"message":"  x-trace-id: ti_44f35731257ff5cfb04ec6a34aa7432b"}
+{"type":"log","callId":"call@74","time":72218.757,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"call@74","time":72218.76,"message":"  permissions-policy: accelerometer=(), ambient-light-sensor=(), camera=(), document-domain=(), encrypted-media=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), sync-xhr=(), usb=(), xr-spatial-tracking=()"}
+{"type":"log","callId":"call@74","time":72218.764,"message":"  strict-transport-security: max-age=31536000; includeSubDomains; preload"}
+{"type":"log","callId":"call@74","time":72218.767,"message":"  content-security-policy: default-src 'none'; style-src 'unsafe-inline' 'self'; img-src data:; object-src 'self'; form-action 'none'; frame-ancestors https://*.fastmail.com;"}
+{"type":"log","callId":"call@74","time":72218.771,"message":"  referrer-policy: never,no-referrer"}
+{"type":"log","callId":"call@74","time":72218.774,"message":"  x-frame-options: DENY"}
+{"type":"log","callId":"call@74","time":72218.777,"message":"  vary: Origin"}
+{"type":"log","callId":"call@74","time":72219.231,"message":"→ GET https://api.fastmail.com/jmap/session"}
+{"type":"log","callId":"call@74","time":72219.243,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.7103.25 Safari/537.36"}
+{"type":"log","callId":"call@74","time":72219.249,"message":"  accept: */*"}
+{"type":"log","callId":"call@74","time":72219.253,"message":"  accept-encoding: gzip"}
+{"type":"log","callId":"call@74","time":72219.256,"message":"  Content-Type: application/json"}
+{"type":"log","callId":"call@74","time":72219.259,"message":"  Authorization: Bearer fmu1-1636404b-c8cbd9afcaead4e3278c6df4220fbe9b-0-9dd0aeaeec9f6a3b2c0e8fb3d6f54112"}
+{"type":"log","callId":"call@74","time":72219.263,"message":"  x-csrf-token: Bjl-OVMHHQ5Aq62aTjXUS4q7w7n6zgnjWDI8q07VFuGgB0HedUkCR_hsZEFfzYnIb7y88q5yE8XcRWP-DIVf8Q"}
+{"type":"log","callId":"call@74","time":72263.051,"message":"← 200 OK"}
+{"type":"log","callId":"call@74","time":72263.073,"message":"  server: nginx"}
+{"type":"log","callId":"call@74","time":72263.079,"message":"  date: Mon, 02 Jun 2025 16:03:30 GMT"}
+{"type":"log","callId":"call@74","time":72263.084,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"call@74","time":72263.089,"message":"  transfer-encoding: chunked"}
+{"type":"log","callId":"call@74","time":72263.092,"message":"  connection: keep-alive"}
+{"type":"log","callId":"call@74","time":72263.096,"message":"  x-backend: phl-web-05"}
+{"type":"log","callId":"call@74","time":72263.099,"message":"  x-backend-ip: 10.202.2.216"}
+{"type":"log","callId":"call@74","time":72263.102,"message":"  x-frontend: phl-frontend-01"}
+{"type":"log","callId":"call@74","time":72263.105,"message":"  x-trace-id: ti_1ac370e8bf3c2c8ffdfe057b18cb1a4d"}
+{"type":"log","callId":"call@74","time":72263.109,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"call@74","time":72263.112,"message":"  permissions-policy: accelerometer=(), ambient-light-sensor=(), camera=(), document-domain=(), encrypted-media=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), sync-xhr=(), usb=(), xr-spatial-tracking=()"}
+{"type":"log","callId":"call@74","time":72263.115,"message":"  strict-transport-security: max-age=31536000; includeSubDomains; preload"}
+{"type":"log","callId":"call@74","time":72263.119,"message":"  content-security-policy: default-src 'none'; style-src 'unsafe-inline' 'self'; img-src data:; object-src 'self'; form-action 'none'; frame-ancestors https://*.fastmail.com;"}
+{"type":"log","callId":"call@74","time":72263.122,"message":"  referrer-policy: never,no-referrer"}
+{"type":"log","callId":"call@74","time":72263.126,"message":"  x-frame-options: DENY"}
+{"type":"log","callId":"call@74","time":72263.129,"message":"  vary: Origin"}
+{"type":"log","callId":"call@74","time":72263.132,"message":"  content-encoding: gzip"}
+{"type":"after","callId":"call@74","endTime":72265.656,"result":{"response":{"url":"https://api.fastmail.com/jmap/session","status":200,"statusText":"OK","headers":[{"name":"Server","value":"nginx"},{"name":"Date","value":"Mon, 02 Jun 2025 16:03:30 GMT"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Transfer-Encoding","value":"chunked"},{"name":"Connection","value":"keep-alive"},{"name":"x-backend","value":"phl-web-05"},{"name":"x-backend-ip","value":"10.202.2.216"},{"name":"X-Frontend","value":"phl-frontend-01"},{"name":"X-Trace-Id","value":"ti_1ac370e8bf3c2c8ffdfe057b18cb1a4d"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Permissions-Policy","value":"accelerometer=(), ambient-light-sensor=(), camera=(), document-domain=(), encrypted-media=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), sync-xhr=(), usb=(), xr-spatial-tracking=()"},{"name":"Strict-Transport-Security","value":"max-age=31536000; includeSubDomains; preload"},{"name":"Content-Security-Policy","value":"default-src 'none'; style-src 'unsafe-inline' 'self'; img-src data:; object-src 'self'; form-action 'none'; frame-ancestors https://*.fastmail.com;"},{"name":"Referrer-Policy","value":"never,no-referrer"},{"name":"X-Frame-Options","value":"DENY"},{"name":"Vary","value":"Origin"},{"name":"Content-Encoding","value":"gzip"}],"fetchUid":"d9001b2bc31fcf4b9b8598aace82ce59"}},"afterSnapshot":"after@call@74"}

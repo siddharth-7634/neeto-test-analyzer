@@ -1,0 +1,233 @@
+import { INBOX_MENU_ITEMS } from "@constants/texts";
+import { FIELD_NAMES } from "@constants/texts/conversations";
+import { faker } from "@faker-js/faker";
+import test from "@fixtures";
+import { COMMON_SELECTORS, getGlobalUserState } from "@neetoplaywright";
+import { expect } from "@playwright/test";
+import { CONVERSATIONS_SELECTORS, INBOX_MENU } from "@selectors";
+import { Visitor } from "@types";
+
+test.describe("Inbox conversation page", () => {
+  const visitor: Visitor = {
+    name: faker.person.fullName(),
+    email: faker.internet.exampleEmail(),
+    visitorToken: faker.string.uuid(),
+  };
+
+  test.beforeEach(async ({ conversationsApis, contactApis }) => {
+    await contactApis.createVisitor(visitor);
+    await conversationsApis.createWidgetConversation(visitor);
+  });
+
+  test.afterEach(async ({ contactApis, conversationsPage }) => {
+    await conversationsPage.openConversationFromList(visitor.name);
+    const conversationId = conversationsPage.extractConversationIdFromUrl();
+
+    const conversationData =
+      await conversationsPage.fetchConversationViaRequest({ conversationId });
+    const contactId = conversationData.conversation.metadata.visitor.id;
+    await contactApis.deleteContacts({ contactIds: [contactId] });
+  });
+
+  test("should be able to filter unresolved conversation", async ({
+    page,
+    conversationsPage,
+  }) => {
+    await test.step("Step 1: verify unresolved view name", async () => {
+      await expect(page.getByTestId(INBOX_MENU.unresolvedTab)).toHaveText(
+        FIELD_NAMES.unresolved
+      );
+    });
+
+    await test.step("Step 2: verify conversation", () =>
+      conversationsPage.verifyConversationExistence({
+        contactName: visitor.name,
+      })
+    );
+  });
+
+  test("should be able to filter closed conversation", async ({
+    page,
+    conversationsPage,
+    t,
+  }) => {
+    await test.step("Step 1: verify closed view name", async () => {
+      await expect(page.getByTestId(INBOX_MENU.closedTab)).toHaveText(
+        t("labels.closed")
+      );
+    });
+
+    await test.step("Step 2: close the conversation", async () => {
+      await conversationsPage.openConversation({ contactName: visitor.name });
+      await conversationsPage.setConversationStatus(t("common.closed"));
+    });
+
+    await test.step(
+      "Step 3: navigate to closed conversation page and verify conversation",
+      async () => {
+        await page.getByTestId(INBOX_MENU.closedTab).click();
+        await conversationsPage.verifyConversationExistence({
+          contactName: visitor.name,
+        });
+      }
+    );
+  });
+
+  test("should be able to filter unassigned conversation", async ({
+    page,
+    t,
+    conversationsPage,
+  }) => {
+    await test.step("Step 1: verify unassigned view name", async () => {
+      await expect(page.getByTestId(INBOX_MENU.unassignedTab)).toHaveText(
+        t("common.unassigned")
+      );
+    });
+
+    await test.step(
+      "Step 2: navigate to unassigned conversation page and verify unassigned conversation",
+      async () => {
+        await page.getByTestId(INBOX_MENU.unassignedTab).click();
+        await conversationsPage.verifyConversationExistence({
+          contactName: visitor.name,
+        });
+      }
+    );
+  });
+
+  test("should be able to filter conversation assigned to current user", async ({
+    page,
+    conversationsPage,
+  }) => {
+    const { currentUserName } = getGlobalUserState();
+
+    await test.step("Step 1: Verify assigned to me view name", async () => {
+      await expect(page.getByTestId(INBOX_MENU.assignedToMeTab)).toHaveText(
+        INBOX_MENU_ITEMS.assignedToMe
+      );
+    });
+
+    await test.step(
+      "Step 2: Assign conversation to current user and verify",
+      async () => {
+        await conversationsPage.openConversation({ contactName: visitor.name });
+        await page
+          .getByTestId(CONVERSATIONS_SELECTORS.assigneeDropdown)
+          .click();
+
+        await page
+          .getByTestId(COMMON_SELECTORS.inputField)
+          .fill(currentUserName);
+
+        await expect(
+          page.getByTestId(CONVERSATIONS_SELECTORS.memberListItem)
+        ).toContainText(currentUserName);
+        await page.getByTestId(CONVERSATIONS_SELECTORS.memberListItem).click();
+        await expect(
+          page.getByTestId(CONVERSATIONS_SELECTORS.assigneeDropdown)
+        ).toContainText(currentUserName);
+      }
+    );
+
+    await test.step(
+      "Step 3: Navigate to assigned to me page and verify conversation assignee",
+      async () => {
+        await page.getByTestId(INBOX_MENU.assignedToMeTab).click();
+        await conversationsPage.openConversation({ contactName: visitor.name });
+        await expect(
+          page.getByTestId(CONVERSATIONS_SELECTORS.assigneeDropdown)
+        ).toContainText(currentUserName);
+      }
+    );
+  });
+
+  test("should be able to filter waiting on customer conversation", async ({
+    page,
+    conversationsPage,
+    t,
+  }) => {
+    await test.step(
+      "Step 1: verify waiting on customer view name",
+      async () => {
+        await expect(
+          page.getByTestId(INBOX_MENU.waitingOnCustomerTab)
+        ).toHaveText(t("labels.waitingOnCustomer"));
+      }
+    );
+
+    await test.step(
+      "Step 2: change conversation status to waiting on customer and verify",
+      async () => {
+        await conversationsPage.openConversation({ contactName: visitor.name });
+        await conversationsPage.changeConversationStatus({
+          status: t("labels.waitingOnCustomer"),
+        });
+      }
+    );
+
+    await test.step("Step 3: verify conversation", async () => {
+      await page.getByTestId(INBOX_MENU.waitingOnCustomerTab).click();
+      await conversationsPage.verifyConversationExistence({
+        contactName: visitor.name,
+      });
+    });
+  });
+
+  test("should be able to filter spam conversation", async ({
+    page,
+    t,
+    conversationsPage,
+  }) => {
+    await test.step("Step 3: verify spam view name", async () => {
+      await expect(page.getByTestId(INBOX_MENU.spamTab)).toHaveText(
+        t("labels.spam")
+      );
+    });
+
+    await test.step("Step 2: change conversation status to spam", async () => {
+      await conversationsPage.openConversation({ contactName: visitor.name });
+      await conversationsPage.changeConversationStatus({
+        status: t("labels.spam"),
+      });
+    });
+
+    await test.step(
+      "Step 3: navigate to spam page and verify conversation",
+      async () => {
+        await page
+          .getByTestId(CONVERSATIONS_SELECTORS.customerBlockModalCancelButton)
+          .click();
+        await page.getByTestId(INBOX_MENU.spamTab).click();
+        await conversationsPage.verifyConversationExistence({
+          contactName: visitor.name,
+        });
+      }
+    );
+  });
+
+  test("should be able to filter trash conversation", async ({
+    page,
+    t,
+    conversationsPage,
+  }) => {
+    await test.step("Step 1: verify trash view name", async () => {
+      await expect(page.getByTestId(INBOX_MENU.trashTab)).toHaveText(
+        t("labels.trash")
+      );
+    });
+
+    await test.step("Step 2: change conversation status to trash", async () => {
+      await conversationsPage.openConversation({ contactName: visitor.name });
+      await conversationsPage.changeConversationStatus({
+        status: t("labels.trash"),
+      });
+    });
+
+    await test.step("Step 3: verify conversation", async () => {
+      await page.getByTestId(INBOX_MENU.trashTab).click();
+      await conversationsPage.verifyConversationExistence({
+        contactName: visitor.name,
+      });
+    });
+  });
+});

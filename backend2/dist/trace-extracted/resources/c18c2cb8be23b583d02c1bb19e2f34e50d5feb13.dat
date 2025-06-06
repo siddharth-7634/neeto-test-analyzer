@@ -1,0 +1,9 @@
+------WebKitFormBoundarylBJ4hltRX2UYbPGz
+Content-Disposition: form-data; name="logs"
+
+[{"tstamp":1748577890425,"event":6,"args":{"experiment_name":"activation_browser_deprecation_warning_may_2025","experiment_type":"visitor","experiment_id":"8853343233524","experiment_group":"on","experiment_trigger":"hash_visitor","exposure_id":"07516e5863d165f8de386400ee939a83"},"team_id":"T00000000","session_id":"64a618c7-fc8b-4e5a-a133-57cc0820d5d3","i18n_locale":"en-US","sub_app_name":"legacy"},{"tstamp":1748577890446,"event":6,"args":{"experiment_name":"signin_design_refresh","experiment_type":"visitor","experiment_id":"8656625636818","experiment_group":"on","experiment_trigger":"hash_visitor","exposure_id":"07516e5863d165f8de386400ee939a83"},"team_id":"T00000000","session_id":"64a618c7-fc8b-4e5a-a133-57cc0820d5d3","i18n_locale":"en-US","sub_app_name":"legacy"}]
+------WebKitFormBoundarylBJ4hltRX2UYbPGz
+Content-Disposition: form-data; name="o"
+
+client
+------WebKitFormBoundarylBJ4hltRX2UYbPGz--

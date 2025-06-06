@@ -1,0 +1,170 @@
+import { ROUTES } from "@constants/routes";
+import { INPUT_FIELDS, CHAT_QUESTIONS } from "@constants/texts/settings";
+import { faker } from "@faker-js/faker";
+import test from "@fixtures";
+import { CHAT_WIDGET_SELECTORS } from "@neetoplaywright";
+import { expect } from "@playwright/test";
+import { SETTINGS_SELECTORS } from "@selectors";
+
+test.describe("Chat questions", () => {
+  test.describe.configure({ mode: "default" });
+  test.afterEach(async ({ chatQuestionsPage }) => {
+    await Promise.all([
+      chatQuestionsPage.deleteExistingPreChatQuestions(),
+      chatQuestionsPage.deleteExistingPostChatQuestions(),
+    ]);
+  });
+
+  test("should be able to add pre chat question", async ({
+    page,
+    neetoPlaywrightUtilities,
+    context,
+    chatQuestionsPage,
+    t,
+  }) => {
+    const items = [
+      {
+        selector: SETTINGS_SELECTORS.widget.questionTypeDropdown,
+        label: INPUT_FIELDS.email,
+        question: t("common.email"),
+        placeHolder: faker.internet.exampleEmail(),
+      },
+      {
+        selector: SETTINGS_SELECTORS.widget.questionTypeDropdown,
+        label: INPUT_FIELDS.name,
+        question: t("common.name"),
+        placeHolder: faker.person.firstName(),
+      },
+      {
+        selector: SETTINGS_SELECTORS.widget.questionTypeDropdown,
+        label: INPUT_FIELDS.phoneNumber,
+        question: t("common.phoneNumber"),
+        placeHolder: faker.phone.number(),
+      },
+    ];
+
+    await test.step("Step 1: Delete all existing Pre chat questions", () =>
+      chatQuestionsPage.deleteExistingPreChatQuestions()
+    );
+
+    await test.step("Step 2: Add questions", async () => {
+      await page.goto(ROUTES.settings.widget.preChatPostChat);
+
+      await neetoPlaywrightUtilities.waitForPageLoad();
+
+      await chatQuestionsPage.addFields(items);
+    });
+
+    await test.step(
+      "Step 2: Check if questions are shown in widget",
+      async () => {
+        const widgetDemo = await context.newPage();
+
+        await widgetDemo.goto(ROUTES.widget.index);
+
+        const frame = widgetDemo.frameLocator(CHAT_WIDGET_SELECTORS.iframe);
+
+        await frame
+          .getByTestId(SETTINGS_SELECTORS.widget.preview.newMessage)
+          .click();
+
+        const widgetForm = frame.getByTestId(
+          SETTINGS_SELECTORS.widget.preview.surveyForm
+        );
+
+        await Promise.all(
+          items
+            .filter(
+              item =>
+                item.question === t("common.name") ||
+                item.question === t("common.phoneNumber")
+            )
+            .map(({ question }) =>
+              expect(widgetForm.filter({ hasText: question })).toBeVisible()
+            )
+        );
+
+        await widgetDemo.close();
+      }
+    );
+  });
+
+  test("should be able to add post chat question", async ({
+    page,
+    neetoPlaywrightUtilities,
+    context,
+    chatQuestionsPage,
+    t,
+  }) => {
+    const items = [
+      {
+        selector: SETTINGS_SELECTORS.widget.questionTypeDropdown,
+        label: INPUT_FIELDS.name,
+        question: t("common.name"),
+        placeHolder: faker.person.firstName(),
+      },
+    ];
+
+    await test.step("Step 1: Delete all existing post chat questions", () =>
+      chatQuestionsPage.deleteExistingPostChatQuestions()
+    );
+
+    await test.step("Step 2 : Should be able to add questions", async () => {
+      await page.goto(ROUTES.settings.widget.preChatPostChat);
+
+      await page
+        .getByTestId(SETTINGS_SELECTORS.widget.tab(CHAT_QUESTIONS.postChatTab))
+        .click();
+
+      await chatQuestionsPage.addFields(items);
+    });
+
+    await test.step(
+      "Step 3: Check if question are shown in the widget",
+      async () => {
+        const widgetDemo = await context.newPage();
+
+        await widgetDemo.goto(ROUTES.widget.index);
+
+        const frame = widgetDemo.frameLocator(CHAT_WIDGET_SELECTORS.iframe);
+
+        await frame
+          .getByTestId(SETTINGS_SELECTORS.widget.preview.newMessage)
+          .click();
+
+        const chatInput = faker.lorem.sentence();
+        await frame
+          .getByTestId(SETTINGS_SELECTORS.widget.preview.chatInput)
+          .fill(chatInput);
+
+        await neetoPlaywrightUtilities.waitForPageLoad({
+          customPageContext: widgetDemo,
+        });
+
+        await widgetDemo.keyboard.press("Enter");
+
+        await frame
+          .getByTestId(SETTINGS_SELECTORS.widget.preview.conversationMenu)
+          .hover();
+
+        await frame
+          .getByTestId(SETTINGS_SELECTORS.widget.preview.endConvesation)
+          .click();
+
+        const widgetForm = frame.getByTestId(
+          SETTINGS_SELECTORS.widget.preview.surveyForm
+        );
+
+        await neetoPlaywrightUtilities.waitForPageLoad({
+          customPageContext: widgetDemo,
+        });
+
+        await expect(
+          widgetForm.filter({ hasText: t("common.name") })
+        ).toBeVisible();
+
+        await widgetDemo.close();
+      }
+    );
+  });
+});

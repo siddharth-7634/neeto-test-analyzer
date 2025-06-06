@@ -1,0 +1,300 @@
+# Test info
+
+- Name: Ticket Tags page >> should be mergeable
+- Location: /home/neetoci/neeto-chat-web/playwright-tests/e2e/tests/settings/tags/ticketTags.spec.ts:94:7
+
+# Error details
+
+```
+Error: locator.click: Error: strict mode violation: getByTestId('neeto-tags-merge-source-tags').filter({ hasText: 'ea' }) resolved to 2 elements:
+    1) <div data-cy="neeto-tags-merge-source-tags" class="neeto-ui-flex neeto-ui-justify-between neeto-ui-items-center neeto-tags-border neeto-ui-border-white neeto-ui-p-2 neeto-ui-rounded-lg neeto-ui-cursor-pointer hover:neeto-ui-bg-gray-100">…</div> aka getByTestId('neeto-tags-merge-source-tags-list').locator('div').filter({ hasText: 'feature-request' })
+    2) <div data-cy="neeto-tags-merge-source-tags" class="neeto-ui-flex neeto-ui-justify-between neeto-ui-items-center neeto-tags-border neeto-ui-border-white neeto-ui-p-2 neeto-ui-rounded-lg neeto-ui-cursor-pointer hover:neeto-ui-bg-gray-100">…</div> aka getByTestId('neeto-tags-merge-source-tags-list').locator('div').filter({ hasText: /^ea$/ })
+
+Call log:
+  - waiting for getByTestId('neeto-tags-merge-source-tags').filter({ hasText: 'ea' })
+
+    at TagsPage.searchAndSelect (/home/neetoci/neeto-chat-web/playwright-tests/node_modules/@bigbinary/neeto-playwright-commons/build/compiled/poms/tags.js:86:18)
+    at TagsPage.mergeAndVerifyTagsViaUI (/home/neetoci/neeto-chat-web/playwright-tests/node_modules/@bigbinary/neeto-playwright-commons/build/compiled/poms/tags.js:89:13)
+    at /home/neetoci/neeto-chat-web/playwright-tests/e2e/tests/settings/tags/ticketTags.spec.ts:155:5
+```
+
+# Page snapshot
+
+```yaml
+- button "AO":
+  - paragraph: AO
+  - img
+- link:
+  - /url: /
+  - img
+- button
+- text: / Admin panel
+- link "Widget":
+  - /url: /admin/admin-panel?category=widget_settings
+- link "Installation":
+  - /url: /admin/admin-panel/widget/installation
+- link "Customize":
+  - /url: /admin/admin-panel/widget/customize/general
+- link "Chat questions":
+  - /url: /admin/admin-panel/widget/chat-surveys/pre-chat
+- link "Visibility":
+  - /url: /admin/admin-panel/widget/visibility-settings
+- separator
+- link "General":
+  - /url: /admin/admin-panel?category=general_settings
+- link "Automation rules":
+  - /url: /admin/admin-panel/general/automation
+- link "Ticket tags":
+  - /url: /admin/admin-panel/general/chat-tags
+- link "Contact tags":
+  - /url: /admin/admin-panel/general/contact-tags
+- link "Canned responses":
+  - /url: /admin/admin-panel/general/canned-responses
+- link "Business hours":
+  - /url: /admin/admin-panel/general/business-hours
+- link "Views":
+  - /url: /admin/admin-panel/general/views
+- link "IP Restriction":
+  - /url: /admin/admin-panel/general/ip-restriction
+- link "Roles":
+  - /url: /admin/admin-panel/general/roles
+- link "Audit logs":
+  - /url: /admin/admin-panel/general/audit-logs
+- link "API keys":
+  - /url: /admin/admin-panel/general/api-keys
+- link "Contact fields":
+  - /url: /admin/admin-panel/general/contact-fields
+- link "Ticket fields":
+  - /url: /admin/admin-panel/general/ticket-fields
+- link "Taxonomy":
+  - /url: /admin/admin-panel/general/taxonomy
+- separator
+- link "Chatbot":
+  - /url: /admin/admin-panel?category=chatbot_settings
+- link "Workflows":
+  - /url: /admin/admin-panel/chatbot/workflows
+- link "APIs":
+  - /url: /admin/admin-panel/chatbot/apis
+- link "Mapped fields":
+  - /url: /admin/admin-panel/chatbot/mapped-fields
+- separator
+- link "Member":
+  - /url: /admin/admin-panel?category=member_settings
+- link "Groups":
+  - /url: /admin/admin-panel/member/groups
+- link "Status":
+  - /url: /admin/admin-panel/member/agent-statuses
+- link "Member notifications":
+  - /url: /admin/admin-panel/member/member-notifications
+- separator
+- link "Integrations":
+  - /url: /admin/admin-panel?category=integrations
+- link "Slack":
+  - /url: /admin/admin-panel/integrations/slack
+- link "Instagram":
+  - /url: /admin/admin-panel/integrations/instagram
+- link "Microsoft Teams":
+  - /url: /admin/admin-panel/integrations/teams
+- link "Whatsapp":
+  - /url: /admin/admin-panel/integrations/whatsapp
+- link "Zapier":
+  - /url: /admin/admin-panel/integrations/zapier
+- link "GitHub":
+  - /url: /admin/admin-panel/integrations/github
+- link "Webhooks":
+  - /url: /admin/admin-panel/integrations/webhooks
+- separator
+- link "Outbound notifications":
+  - /url: /admin/admin-panel?category=outbound_notifications
+- link "Visitor notification of unread messages":
+  - /url: /admin/admin-panel/outbound/outbound-notifications
+- button:
+  - img
+- link "Admin panel":
+  - /url: /admin/admin-panel
+- text: /
+- link "General":
+  - /url: /admin/admin-panel?category=general_settings
+- text: /
+- link "Ticket tags":
+  - /url: /admin/admin-panel/general/chat-tags
+- text: /
+- link "Merge tags":
+  - /url: /admin/admin-panel/general/chat-tags/merge
+- heading "Merge tags" [level=1]
+- button "Merge" [disabled]
+- heading "Select source tag" [level=4]
+- textbox "Search tags": ea
+- text: feature-request ea
+- img
+- heading "Select destination tag" [level=4]
+- textbox "Search tags"
+- text: refund feedback sales feature-request ea adiuvo
+- heading "Keyboard shortcuts" [level=4]
+- button
+- heading "GLOBAL" [level=6]
+- paragraph: See keyboard shortcuts
+- text: shift /
+- paragraph: Close modals, panes
+- text: esc
+- paragraph: Submit form or text input
+- text: ctrl enter
+- heading "NeetoChat specific" [level=6]
+- paragraph: Close ticket
+- text: ctrl alt y
+- paragraph: Add canned responses
+- text: ctrl alt r
+- paragraph: Attach NeetoKB article
+- text: ctrl alt a
+- paragraph: Add gif
+- text: ctrl alt g
+- paragraph: Add image
+- text: ctrl alt k
+- paragraph: Add video
+- text: ctrl alt v
+- paragraph: Switch to chat(while typing in note)
+- text: ctrl alt c
+- paragraph: Switch to note(while typing in chat)
+- text: ctrl alt n
+- paragraph: Save title
+- text: enter
+- paragraph: Cancel edit
+- text: esc
+- heading "Workflow builder" [level=6]
+- paragraph: Delete node or edge(based on selection)
+- text: Delete
+- paragraph: Save new button label(while renaming button)
+- text: enter
+- paragraph: Cancel button renaming
+- text: esc
+```
+
+# Test source
+
+```ts
+   55 |     await test.step(
+   56 |       "Step 2: Page should contain table with 2 columns",
+   57 |       async () => {
+   58 |         const columns = [t("common.name"), t("common.description")];
+   59 |
+   60 |         await tableUtils.verifyTableColumnsExistence({
+   61 |           columnNames: columns,
+   62 |           page,
+   63 |         });
+   64 |       }
+   65 |     );
+   66 |
+   67 |     await test.step("Step 3: Verify filters on tags", () =>
+   68 |       tagsPage.filterTagsViaUI(tagName)
+   69 |     );
+   70 |
+   71 |     await test.step("Step 4: Verify edit tags", () =>
+   72 |       tagsPage.editTagViaUI({ tagName, newTagName })
+   73 |     );
+   74 |
+   75 |     await test.step(
+   76 |       "Step 5: Tag should be searchable and deletable",
+   77 |       async () => {
+   78 |         await tagsPage.searchAndVerifyTags(newTagName);
+   79 |
+   80 |         await page
+   81 |           .getByRole("row", { name: newTagName })
+   82 |           .getByTestId(COMMON_SELECTORS.dropdownIcon)
+   83 |           .click();
+   84 |
+   85 |         await page.getByTestId(TAGS_SELECTORS.deleteButton).click();
+   86 |
+   87 |         await page.getByTestId(COMMON_SELECTORS.alertModalSubmitButton).click();
+   88 |         await neetoPlaywrightUtilities.verifyToast();
+   89 |         await expect(page.getByRole("row", { name: newTagName })).toBeHidden();
+   90 |       }
+   91 |     );
+   92 |   });
+   93 |
+   94 |   test("should be mergeable", async ({
+   95 |     contactsPage,
+   96 |     conversationsPage,
+   97 |     page,
+   98 |     t,
+   99 |     tagsPage: chatTagsPage,
+  100 |     contactApis,
+  101 |     conversationsApis,
+  102 |   }) => {
+  103 |     const newTags = dynamicArray(2, () => ({
+  104 |       description: faker.lorem.word(),
+  105 |       name: faker.lorem.word(),
+  106 |     }));
+  107 |
+  108 |     await test.step("Step 1: Create two tags", () =>
+  109 |       Promise.all(
+  110 |         newTags.map(tag =>
+  111 |           tagsPage.addTagsViaRequest({
+  112 |             ...tag,
+  113 |             tagsRequestUrl: API_ROUTES.tags.index,
+  114 |           })
+  115 |         )
+  116 |       )
+  117 |     );
+  118 |
+  119 |     await test.step("Step 2: Create conversations", async () => {
+  120 |       visitor = {
+  121 |         name: faker.internet.username(),
+  122 |         email: faker.internet.email(),
+  123 |         visitorToken: faker.string.uuid(),
+  124 |       };
+  125 |       await contactApis.createVisitor(visitor);
+  126 |       const token = await contactsPage.getVisitorToken({
+  127 |         visitor: visitor.email,
+  128 |       });
+  129 |
+  130 |       await conversationsApis.createWidgetConversation({
+  131 |         visitorToken: token,
+  132 |       });
+  133 |       await conversationsPage.goToChatPage();
+  134 |       await conversationsPage.openConversationFromList(visitor.name);
+  135 |     });
+  136 |
+  137 |     await test.step("Step 3: Assign tag to conversations", () =>
+  138 |       conversationsPage.addTagAndVerify(newTags[0].name)
+  139 |     );
+  140 |
+  141 |     await test.step(
+  142 |       "Step 4: Go to merge tags page and verify title",
+  143 |       async () => {
+  144 |         await page.getByTestId(SETTINGS_SELECTORS.settingsNavTab).click();
+  145 |         await page
+  146 |           .getByTestId(
+  147 |             COMMON_SELECTORS.sidebarSubLink(t("common.tags.ticketTags"))
+  148 |           )
+  149 |           .click();
+  150 |
+  151 |         await tagsPage.navigateToMergeTagsPage();
+  152 |       }
+  153 |     );
+  154 |
+> 155 |     await test.step("Step 5: Merge tags", () =>
+      |     ^ Error: locator.click: Error: strict mode violation: getByTestId('neeto-tags-merge-source-tags').filter({ hasText: 'ea' }) resolved to 2 elements:
+  156 |       tagsPage.mergeAndVerifyTagsViaUI({
+  157 |         sourceTagName: newTags[0].name,
+  158 |         destinationTagName: newTags[1].name,
+  159 |         tagsBreadcrumbSelector: CHAT_TAGS_SELECTORS.ticketTagsBreadcrumb,
+  160 |       })
+  161 |     );
+  162 |
+  163 |     await test.step("Step 6: Verify merged tags", async () => {
+  164 |       await conversationsPage.goToChatPage();
+  165 |       await conversationsPage.openConversationFromList(visitor.name);
+  166 |       await chatTagsPage.verifyTagShouldNotBePresentInTagOptions(
+  167 |         newTags[0].name
+  168 |       );
+  169 |       await page.getByTestId(TAGS_SELECTORS.addTagButton).click();
+  170 |       await expect(
+  171 |         page.getByTestId(CHAT_TAGS_SELECTORS.tagContainer).filter({
+  172 |           hasText: newTags[1].name,
+  173 |         })
+  174 |       ).toBeVisible();
+  175 |     });
+  176 |   });
+  177 | });
+  178 |
+```

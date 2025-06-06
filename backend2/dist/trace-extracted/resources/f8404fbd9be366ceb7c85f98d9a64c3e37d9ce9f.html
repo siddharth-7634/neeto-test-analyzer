@@ -1,0 +1,6 @@
+<script>(function() {
+	if (!window.parent) return;
+	sessionStorage.incomingConfig = JSON.stringify({"teams":{"T06JC8BFR71":{"id":"T06JC8BFR71","name":"Aquamarine Aquarium","url":"https:\/\/aquamarineaquarium.slack.com\/","domain":"aquamarineaquarium","token":"xoxc-6624283535239-6651501569473-8997981467856-755d162be44a9a0c2eeeb4392b1eaa6488c06255adde13865aea3ebd0341eb89","user_locale":"en-US","user_id":"U06K5ERGRDX","is_unified_user_client_enabled":true,"icon":{"image_68":"https:\/\/a.slack-edge.com\/80588\/img\/avatars-teams\/ava_0018-68.png","image_88":"https:\/\/a.slack-edge.com\/80588\/img\/avatars-teams\/ava_0018-88.png","image_default":true}}},"lc":"1748577894","last_fetched":"1748577904","deleted_teams":[],"pending_auth_teams":{}});
+	console.log('[AUTH] credentials are ready');
+	window.parent.postMessage('gantry_auth_notify', "https:\/\/app.slack.com");
+})();</script>

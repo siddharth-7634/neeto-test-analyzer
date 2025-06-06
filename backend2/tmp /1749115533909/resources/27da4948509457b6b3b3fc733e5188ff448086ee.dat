@@ -1,0 +1,25 @@
+------WebKitFormBoundarysM7MRIyJyK1W2hzY
+Content-Disposition: form-data; name="token"
+
+xoxc-6624283535239-6651501569473-8997981467856-755d162be44a9a0c2eeeb4392b1eaa6488c06255adde13865aea3ebd0341eb89
+------WebKitFormBoundarysM7MRIyJyK1W2hzY
+Content-Disposition: form-data; name="event"
+
+{"type":"request_spaces","spaces":["workspace_menu_primary_plan_info","workspace_menu_secondary_plan_info","workspace_menu_upsell","emoji_drawer","invite_modal_learn_more_about_guests_cta","create_channel_make_shared_cta","guests_modal_dropdown","main_menu","profile_menu","sidebar_menu_header","later_page_header","later_page_sidebar_link","huddle_button_menu","workflow_builder_header","app_header","all_workflows_header","automations_sidebar_menu_item","canvas_template","user_menu_coachmarks","more_peek_menu","create_menu","search_modal_footer","huddle_invite_modal","huddle_toolbar","automations_tab_coachmarks","lists_add_to_list_modal","search_modal_header","workspace_add_menu","workspace_team_switcher_menu","canvas_create_menu","calendar_page_header","todos_add_to_todos_modal","todos_home_sidebar"],"ia_version":4,"is_app_store_build":false,"is_joiner_launchpad_enabled":false}
+------WebKitFormBoundarysM7MRIyJyK1W2hzY
+Content-Disposition: form-data; name="_x_reason"
+
+boot
+------WebKitFormBoundarysM7MRIyJyK1W2hzY
+Content-Disposition: form-data; name="_x_mode"
+
+online
+------WebKitFormBoundarysM7MRIyJyK1W2hzY
+Content-Disposition: form-data; name="_x_sonic"
+
+true
+------WebKitFormBoundarysM7MRIyJyK1W2hzY
+Content-Disposition: form-data; name="_x_app_name"
+
+client
+------WebKitFormBoundarysM7MRIyJyK1W2hzY--

@@ -1,0 +1,335 @@
+# Test info
+
+- Name: Verify Slack integration >> should verify Slack message is send via automation rule
+- Location: /home/neetoci/neeto-chat-web/playwright-tests/e2e/tests/integrations/slack.spec.ts:101:7
+
+# Error details
+
+```
+TimeoutError: locator.click: Timeout 10000ms exceeded.
+Call log:
+  - waiting for getByRole('cell', { name: 'Send new conversations to Slack general channel' }).getByTestId('nui-dropdown-icon')
+
+    at AutomationRulesPage.deleteAutomationRule (/home/neetoci/neeto-chat-web/playwright-tests/e2e/poms/automations.ts:131:8)
+    at /home/neetoci/neeto-chat-web/playwright-tests/e2e/tests/integrations/slack.spec.ts:85:7
+```
+
+# Page snapshot
+
+```yaml
+- button "AO":
+  - paragraph: AO
+  - img
+- link:
+  - /url: /
+  - img
+- button
+- text: / Admin panel
+- link "Widget":
+  - /url: /admin/admin-panel?category=widget_settings
+- link "Installation":
+  - /url: /admin/admin-panel/widget/installation
+- link "Customize":
+  - /url: /admin/admin-panel/widget/customize/general
+- link "Chat questions":
+  - /url: /admin/admin-panel/widget/chat-surveys/pre-chat
+- link "Visibility":
+  - /url: /admin/admin-panel/widget/visibility-settings
+- separator
+- link "General":
+  - /url: /admin/admin-panel?category=general_settings
+- link "Automation rules":
+  - /url: /admin/admin-panel/general/automation
+- link "Ticket tags":
+  - /url: /admin/admin-panel/general/chat-tags
+- link "Contact tags":
+  - /url: /admin/admin-panel/general/contact-tags
+- link "Canned responses":
+  - /url: /admin/admin-panel/general/canned-responses
+- link "Business hours":
+  - /url: /admin/admin-panel/general/business-hours
+- link "Views":
+  - /url: /admin/admin-panel/general/views
+- link "IP Restriction":
+  - /url: /admin/admin-panel/general/ip-restriction
+- link "Roles":
+  - /url: /admin/admin-panel/general/roles
+- link "Audit logs":
+  - /url: /admin/admin-panel/general/audit-logs
+- link "API keys":
+  - /url: /admin/admin-panel/general/api-keys
+- link "Contact fields":
+  - /url: /admin/admin-panel/general/contact-fields
+- link "Ticket fields":
+  - /url: /admin/admin-panel/general/ticket-fields
+- link "Taxonomy":
+  - /url: /admin/admin-panel/general/taxonomy
+- separator
+- link "Chatbot":
+  - /url: /admin/admin-panel?category=chatbot_settings
+- link "Workflows":
+  - /url: /admin/admin-panel/chatbot/workflows
+- link "APIs":
+  - /url: /admin/admin-panel/chatbot/apis
+- link "Mapped fields":
+  - /url: /admin/admin-panel/chatbot/mapped-fields
+- separator
+- link "Member":
+  - /url: /admin/admin-panel?category=member_settings
+- link "Groups":
+  - /url: /admin/admin-panel/member/groups
+- link "Status":
+  - /url: /admin/admin-panel/member/agent-statuses
+- link "Member notifications":
+  - /url: /admin/admin-panel/member/member-notifications
+- separator
+- link "Integrations":
+  - /url: /admin/admin-panel?category=integrations
+- link "Slack":
+  - /url: /admin/admin-panel/integrations/slack
+- link "Instagram":
+  - /url: /admin/admin-panel/integrations/instagram
+- link "Microsoft Teams":
+  - /url: /admin/admin-panel/integrations/teams
+- link "Whatsapp":
+  - /url: /admin/admin-panel/integrations/whatsapp
+- link "Zapier":
+  - /url: /admin/admin-panel/integrations/zapier
+- link "GitHub":
+  - /url: /admin/admin-panel/integrations/github
+- link "Webhooks":
+  - /url: /admin/admin-panel/integrations/webhooks
+- separator
+- link "Outbound notifications":
+  - /url: /admin/admin-panel?category=outbound_notifications
+- link "Visitor notification of unread messages":
+  - /url: /admin/admin-panel/outbound/outbound-notifications
+- button:
+  - img
+- link "Admin panel":
+  - /url: /admin/admin-panel
+- text: /
+- link "General":
+  - /url: /admin/admin-panel?category=general_settings
+- text: /
+- link "Automation rules":
+  - /url: /admin/admin-panel/general/automation
+- heading "Automation rules" [level=1]:
+  - text: Automation rules
+  - button:
+    - img
+- img
+- searchbox "Search automation rules"
+- link "Add new rule":
+  - /url: /admin/admin-panel/general/automation/new
+- heading "4 automation rules" [level=4]
+- table:
+  - rowgroup:
+    - row "Name Description Active Apply on":
+      - columnheader "Name":
+        - text: Name
+        - button
+      - columnheader "Description":
+        - text: Description
+        - button
+      - columnheader "Active":
+        - text: Active
+        - button
+      - columnheader "Apply on":
+        - text: Apply on
+        - button
+- table:
+  - rowgroup:
+    - row "[Status Update] - Mark as Open - Conversations":
+      - cell "[Status Update] - Mark as Open":
+        - button "[Status Update] - Mark as Open"
+        - button
+      - cell "-":
+        - paragraph: "-"
+      - cell:
+        - checkbox [checked]
+      - cell "Conversations"
+    - row "Create a ticket if agents are offline - Widget":
+      - cell "Create a ticket if agents are offline":
+        - button "Create a ticket if agents are offline"
+        - button
+      - cell "-":
+        - paragraph: "-"
+      - cell:
+        - checkbox
+      - cell "Widget"
+    - row "Proactive invitation on every page - Widget":
+      - cell "Proactive invitation on every page":
+        - button "Proactive invitation on every page"
+        - button
+      - cell "-":
+        - paragraph: "-"
+      - cell:
+        - checkbox
+      - cell "Widget"
+    - row "Proactive System during business hours. - Widget":
+      - cell "Proactive System during business hours.":
+        - button "Proactive System during business hours."
+        - button
+      - cell "-":
+        - paragraph: "-"
+      - cell:
+        - checkbox
+      - cell "Widget"
+- heading "Keyboard shortcuts" [level=4]
+- button
+- heading "GLOBAL" [level=6]
+- paragraph: See keyboard shortcuts
+- text: shift /
+- paragraph: Close modals, panes
+- text: esc
+- paragraph: Submit form or text input
+- text: ctrl enter
+- heading "NeetoChat specific" [level=6]
+- paragraph: Close ticket
+- text: ctrl alt y
+- paragraph: Add canned responses
+- text: ctrl alt r
+- paragraph: Attach NeetoKB article
+- text: ctrl alt a
+- paragraph: Add gif
+- text: ctrl alt g
+- paragraph: Add image
+- text: ctrl alt k
+- paragraph: Add video
+- text: ctrl alt v
+- paragraph: Switch to chat(while typing in note)
+- text: ctrl alt c
+- paragraph: Switch to note(while typing in chat)
+- text: ctrl alt n
+- paragraph: Save title
+- text: enter
+- paragraph: Cancel edit
+- text: esc
+- heading "Workflow builder" [level=6]
+- paragraph: Delete node or edge(based on selection)
+- text: Delete
+- paragraph: Save new button label(while renaming button)
+- text: enter
+- paragraph: Cancel button renaming
+- text: esc
+```
+
+# Test source
+
+```ts
+   31 |       )
+   32 |       .click();
+   33 |
+   34 |     await this.page
+   35 |       .getByTestId(SETTINGS_SELECTORS.automationRule.newButton)
+   36 |       .click();
+   37 |
+   38 |     await this.page
+   39 |       .getByRole("radio", { name: this.t("visitor.convs") })
+   40 |       .click();
+   41 |
+   42 |     await this.page
+   43 |       .getByTestId(SETTINGS_SELECTORS.automationRule.nameInputField)
+   44 |       .pressSequentially(name, { delay: 10 });
+   45 |
+   46 |     await expect(
+   47 |       this.page.getByTestId(COMMON_SELECTORS.nameInputError)
+   48 |     ).toBeHidden();
+   49 |
+   50 |     await expect(async () => {
+   51 |       const conditionMultiSelectField = this.page.getByTestId(
+   52 |         SETTINGS_SELECTORS.automationRule.conditionMultiSelectField
+   53 |       );
+   54 |       await conditionMultiSelectField.click();
+   55 |       await this.page
+   56 |         .getByTestId(COMMON_SELECTORS.dropdownContainer)
+   57 |         .getByTestId(
+   58 |           SETTINGS_SELECTORS.automationRule.conversationIsCreatedItem
+   59 |         )
+   60 |         .click();
+   61 |
+   62 |       await expect(conditionMultiSelectField).toContainText(
+   63 |         this.t("automation.events.created"),
+   64 |         { ignoreCase: true }
+   65 |       );
+   66 |     }).toPass({ timeout: 35_000 });
+   67 |
+   68 |     await this.page
+   69 |       .getByTestId(SETTINGS_SELECTORS.automationRule.actionDropdownButton)
+   70 |       .click();
+   71 |
+   72 |     await this.page
+   73 |       .getByTestId(COMMON_SELECTORS.dropdownContainer)
+   74 |       .getByTestId(SETTINGS_SELECTORS.automationRule.messageToSlackItem)
+   75 |       .click();
+   76 |
+   77 |     await this.page
+   78 |       .getByTestId(SETTINGS_SELECTORS.automationRule.actionDropdownButton)
+   79 |       .filter({ hasText: this.t("automation.common.selectChannel") })
+   80 |       .click();
+   81 |
+   82 |     await this.page
+   83 |       .getByTestId(SETTINGS_SELECTORS.automationRule.slackChannelItem(channel))
+   84 |       .click();
+   85 |     await this.page.getByTestId(COMMON_SELECTORS.saveChangesButton).click();
+   86 |
+   87 |     await this.page
+   88 |       .getByRole("cell", { name })
+   89 |       .getByTestId(COMMON_SELECTORS.dropdownIcon)
+   90 |       .click();
+   91 |
+   92 |     await this.page
+   93 |       .getByTestId(COMMON_SELECTORS.dropdownContainer)
+   94 |       .getByText(this.t("common.edit"))
+   95 |       .click();
+   96 |
+   97 |     await this.page.reload();
+   98 |     await this.page.waitForLoadState();
+   99 |
+  100 |     await expect(this.page.getByTestId(COMMON_SELECTORS.pageLoader)).toBeHidden(
+  101 |       { timeout: 20_000 }
+  102 |     );
+  103 |
+  104 |     await expect(
+  105 |       this.page
+  106 |         .getByTestId(SETTINGS_SELECTORS.automationRule.actionDropdownButton)
+  107 |         .filter({ hasText: channel })
+  108 |     ).toBeVisible();
+  109 |
+  110 |     await this.page.getByTestId(COMMON_SELECTORS.cancelButton).click();
+  111 |   };
+  112 |
+  113 |   deleteAutomationRule = async (ruleName: string) => {
+  114 |     await expect(this.page.getByTestId(COMMON_SELECTORS.pageLoader)).toBeHidden(
+  115 |       { timeout: 10_000 }
+  116 |     );
+  117 |
+  118 |     await this.page
+  119 |       .getByTestId(
+  120 |         SETTINGS_SELECTORS.automationRule.automationRulesSettingsLink
+  121 |       )
+  122 |       .click();
+  123 |
+  124 |     await expect(this.page.getByTestId(COMMON_SELECTORS.pageLoader)).toBeHidden(
+  125 |       { timeout: 10_000 }
+  126 |     );
+  127 |
+  128 |     await this.page
+  129 |       .getByRole("cell", { name: ruleName })
+  130 |       .getByTestId(COMMON_SELECTORS.dropdownIcon)
+> 131 |       .click();
+      |        ^ TimeoutError: locator.click: Timeout 10000ms exceeded.
+  132 |
+  133 |     await this.page
+  134 |       .getByTestId(COMMON_SELECTORS.dropdownContainer)
+  135 |       .getByText(this.t("common.delete"))
+  136 |       .click();
+  137 |
+  138 |     await this.page
+  139 |       .getByTestId(COMMON_SELECTORS.alertModalSubmitButton)
+  140 |       .click();
+  141 |   };
+  142 | }
+  143 |
+```

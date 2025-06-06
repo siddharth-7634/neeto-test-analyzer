@@ -1,0 +1,37 @@
+------WebKitFormBoundaryUE6AyvXL7x8Lw19o
+Content-Disposition: form-data; name="token"
+
+xoxc-6624283535239-6651501569473-8997981467856-755d162be44a9a0c2eeeb4392b1eaa6488c06255adde13865aea3ebd0341eb89
+------WebKitFormBoundaryUE6AyvXL7x8Lw19o
+Content-Disposition: form-data; name="_x_reason"
+
+initial-data
+------WebKitFormBoundaryUE6AyvXL7x8Lw19o
+Content-Disposition: form-data; name="version_all_channels"
+
+false
+------WebKitFormBoundaryUE6AyvXL7x8Lw19o
+Content-Disposition: form-data; name="include_min_version_bump_check"
+
+1
+------WebKitFormBoundaryUE6AyvXL7x8Lw19o
+Content-Disposition: form-data; name="version_ts"
+
+1748571757
+------WebKitFormBoundaryUE6AyvXL7x8Lw19o
+Content-Disposition: form-data; name="build_version_ts"
+
+1748571757
+------WebKitFormBoundaryUE6AyvXL7x8Lw19o
+Content-Disposition: form-data; name="build_manifest_last_modified"
+
+1748575433
+------WebKitFormBoundaryUE6AyvXL7x8Lw19o
+Content-Disposition: form-data; name="_x_sonic"
+
+true
+------WebKitFormBoundaryUE6AyvXL7x8Lw19o
+Content-Disposition: form-data; name="_x_app_name"
+
+client
+------WebKitFormBoundaryUE6AyvXL7x8Lw19o--

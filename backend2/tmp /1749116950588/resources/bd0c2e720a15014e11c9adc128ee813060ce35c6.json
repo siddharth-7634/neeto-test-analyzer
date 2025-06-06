@@ -1,0 +1,1 @@
+{"ok":true,"primary_websocket_url":"wss:\/\/wss-primary.slack.com\/","fallback_websocket_url":"wss:\/\/wss-backup.slack.com\/","ttl_seconds":604800,"routing_context":"T06JC8BFR71-1"}

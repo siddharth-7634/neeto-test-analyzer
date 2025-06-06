@@ -1,0 +1,403 @@
+import { ContactApis, ConversationsApis } from "@apis";
+import { ROUTES } from "@constants/routes";
+import { TAGS } from "@constants/texts";
+import { CustomCommands, COMMON_SELECTORS } from "@neetoplaywright";
+import { Page, expect } from "@playwright/test";
+import {
+  changePriorityProps,
+  FetchConversationProps,
+  FilterByViewProps,
+  FilterConversationTitleByContactNamesProps,
+  fetchConversationListViaRequest,
+  GetQueryParamsValueProps,
+  OpenConversationProps,
+  SearchConversationProps,
+  SetConversationTitleProps,
+  VerifyPreviewMessageProps,
+  VerifyConversationOrderProps,
+  ChangeConversationStatusProps,
+  VerifyConversationExistenceProps,
+} from "@poms/types";
+import {
+  CONTACTS_SELECTOR,
+  CONVERSATIONS_SELECTORS,
+  NAV_LINKS,
+  TAGS_SELECTORS,
+  COMMON_SELECTORS as commonSelectors,
+  STATUS_OPTIONS,
+  INBOX_MENU,
+} from "@selectors";
+import { isEmpty, pluck } from "ramda";
+
+export default class ConversationsPage {
+  constructor(
+    private page: Page,
+    private neetoPlaywrightUtilities: CustomCommands,
+    private conversationsApis: ConversationsApis,
+    private contactApis: ContactApis
+  ) {}
+
+  openConversationFromList = async (name: string) => {
+    const conversation = this.page
+      .getByTestId(CONVERSATIONS_SELECTORS.conversations)
+      .filter({ hasText: name });
+
+    const isConversationExists = await conversation.isVisible();
+    if (!isConversationExists) {
+      await this.searchConversationAndVerify({ searchTerm: name });
+    }
+
+    await conversation.click();
+  };
+
+  deleteMultipleConversationsFromUser = async ({
+    searchTerm,
+    view,
+  }: {
+    searchTerm: string;
+    view?: string;
+  }) => {
+    const apiResponse = await this.conversationsApis.fetchConversationsList({
+      searchTerm,
+      view,
+    });
+    const conversations = await apiResponse.json();
+    const conversationIds = pluck("id", conversations.conversations);
+    const contactIds: string[] = [];
+    for (const conversationId of conversationIds) {
+      const conversationData = await this.fetchConversationViaRequest({
+        conversationId,
+      });
+      const contactId = conversationData.conversation.metadata.visitor.id;
+      if (contactId) {
+        contactIds.push(contactId);
+      }
+    }
+    if (!isEmpty(contactIds)) {
+      await this.contactApis.deleteContacts({ contactIds });
+      await this.neetoPlaywrightUtilities.reloadAndWait();
+    }
+  };
+
+  openContactFromList = async (name: string) => {
+    const contact = await this.page
+      .getByTestId(CONTACTS_SELECTOR.contactNameField)
+      .filter({ hasText: name });
+
+    await contact.click();
+  };
+
+  filterByView = async ({ label, currentValue }: FilterByViewProps) => {
+    await this.page
+      .getByTestId(CONVERSATIONS_SELECTORS.conversationStatus)
+      .click();
+
+    await this.page
+      .getByTestId(STATUS_OPTIONS.inboxStatusOption(currentValue))
+      .click();
+    await this.page.getByTestId(INBOX_MENU.inboxMenuTab(label)).click();
+  };
+
+  setConversationTitleAndVerify = async ({
+    title,
+  }: SetConversationTitleProps) => {
+    await this.page
+      .getByTestId(CONVERSATIONS_SELECTORS.inboxConversationTitle)
+      .fill(title);
+
+    await this.page.getByTestId(CONVERSATIONS_SELECTORS.customerName).click();
+
+    await this.neetoPlaywrightUtilities.verifyToast({
+      closeAfterVerification: true,
+    });
+  };
+
+  setConversationStatus = async (status: string) => {
+    await this.page
+      .getByTestId(CONVERSATIONS_SELECTORS.conversationStatusDropdown)
+      .click();
+
+    await this.page
+      .getByTestId(CONVERSATIONS_SELECTORS.statusListItem(status))
+      .click();
+  };
+
+  extractConversationIdFromUrl = () => {
+    const pageUrl = this.page.url();
+    const fullPathName = new URL(pageUrl);
+    const pathName = fullPathName.pathname;
+
+    return pathName.split("/")[4];
+  };
+
+  getQueryParamsValue = ({ queryParamKey }: GetQueryParamsValueProps) => {
+    const pageUrl = this.page.url();
+    const queryParams = new URL(pageUrl).searchParams;
+
+    return queryParams.get(queryParamKey);
+  };
+
+  fetchConversationViaRequest = async ({
+    conversationId,
+  }: FetchConversationProps) => {
+    const conversationResponse =
+      await this.conversationsApis.fetchConversationDetails(conversationId);
+    const responseBodyBuffer = await conversationResponse.body();
+    const responseBodyString = responseBodyBuffer.toString();
+
+    return JSON.parse(responseBodyString);
+  };
+
+  fetchConversationListViaRequest = async ({
+    page = 1,
+    pageSize = 30,
+    searchTerm = "",
+    sortBy = "created_at",
+    orderBy = "DESC",
+    view = "open",
+  }: Partial<fetchConversationListViaRequest> = {}) => {
+    const apiResponse = await this.conversationsApis.fetchConversationsList({
+      page,
+      pageSize,
+      searchTerm,
+      sortBy,
+      orderBy,
+      view,
+    });
+    const responseBodyBuffer = await apiResponse.body();
+    const responseBodyString = responseBodyBuffer.toString();
+
+    return JSON.parse(responseBodyString);
+  };
+
+  filterConversationTitleByContactNames = async ({
+    contactNames,
+  }: FilterConversationTitleByContactNamesProps) => {
+    const conversationTitles = await this.page
+      .getByTestId(CONVERSATIONS_SELECTORS.conversationTitle)
+      .allInnerTexts();
+
+    return conversationTitles.filter(conversationTitle =>
+      contactNames.includes(conversationTitle)
+    );
+  };
+
+  changePriorityOfConversations = async ({
+    contactNames,
+    priorities,
+  }: changePriorityProps) => {
+    // Reason: Need this to be executed in serial order.
+    // eslint-disable-next-line @bigbinary/neeto/use-array-methods
+    for (
+      let priorityNumber = 0;
+      priorityNumber < priorities.length;
+      priorityNumber++
+    ) {
+      await this.openConversation({
+        contactName: contactNames[priorityNumber],
+      });
+
+      await this.page
+        .getByTestId(CONVERSATIONS_SELECTORS.conversationPriority)
+        .click();
+
+      await this.page
+        .getByTestId(CONVERSATIONS_SELECTORS.priorityListItem)
+        .filter({ hasText: priorities[priorityNumber] })
+        .click();
+    }
+  };
+
+  verifyConversationOrder = async ({
+    orderBy,
+    sortBy,
+    contactNames,
+  }: VerifyConversationOrderProps) => {
+    const conversationList = await this.fetchConversationListViaRequest({
+      orderBy,
+      sortBy,
+    });
+
+    const filteredConversations = conversationList.conversations.filter(
+      conversation => contactNames.includes(conversation.visitor.name)
+    );
+
+    const filteredConversationTitles = filteredConversations.map(
+      conversation => conversation.visitor.name
+    );
+
+    const uiFilteredConversationTitles =
+      await this.filterConversationTitleByContactNames({
+        contactNames,
+      });
+
+    expect(filteredConversationTitles).toStrictEqual(
+      uiFilteredConversationTitles
+    );
+  };
+
+  sendMessage = async (message: string) => {
+    const textareaDiv = this.page.getByTestId(commonSelectors.neetoEditor);
+    await textareaDiv.click();
+
+    //TODO: Replace with .fill() after https://github.com/bigbinary/neeto-editor/issues/980 is closed.
+    await this.page
+      .getByTestId(commonSelectors.neetoEditor)
+      .pressSequentially(message);
+
+    await this.page
+      .getByTestId(CONVERSATIONS_SELECTORS.sendMessageButton)
+      .click();
+  };
+
+  verifyMessageExistence = (message: string) =>
+    expect(
+      this.page
+        .getByTestId(CONVERSATIONS_SELECTORS.inboxBody)
+        .filter({ hasText: message })
+    ).toBeVisible({ timeout: 20_000 });
+
+  verifyPreviewMessage = ({
+    contactName,
+    message,
+  }: VerifyPreviewMessageProps) =>
+    expect(
+      this.page
+        .getByTestId(CONVERSATIONS_SELECTORS.conversations)
+        .filter({ hasText: contactName })
+        .getByTestId(CONVERSATIONS_SELECTORS.latestMessagePreview)
+    ).toHaveText(message, { timeout: 10_000 });
+
+  openConversation = async ({ contactName }: OpenConversationProps) => {
+    const conversation = this.page
+      .getByTestId(CONVERSATIONS_SELECTORS.conversations)
+      .filter({ hasText: contactName });
+    await this.neetoPlaywrightUtilities.waitForPageLoad();
+    const isConversationExists = await conversation.isVisible();
+    if (!isConversationExists) {
+      await this.searchConversationAndVerify({ searchTerm: contactName });
+    }
+    await expect(conversation).toBeVisible({ timeout: 10_000 });
+    await conversation.click();
+  };
+
+  changeConversationStatus = async ({
+    status,
+  }: ChangeConversationStatusProps) => {
+    await this.page
+      .getByTestId(CONVERSATIONS_SELECTORS.conversationStatusDropdown)
+      .click();
+
+    await this.page
+      .getByTestId(STATUS_OPTIONS.inboxStatusOption(status))
+      .click();
+  };
+
+  verifyConversationExistence = async ({
+    contactName,
+  }: VerifyConversationExistenceProps) => {
+    await expect(
+      this.page
+        .getByTestId(CONVERSATIONS_SELECTORS.conversationTitle)
+        .filter({ hasText: contactName })
+    ).toBeVisible();
+  };
+
+  searchConversationAndVerify = async ({
+    searchTerm,
+  }: SearchConversationProps) => {
+    const searchConversationInput = this.page.getByTestId(
+      CONVERSATIONS_SELECTORS.searchConversationTextField
+    );
+    if (!(await searchConversationInput.isVisible())) {
+      await this.page
+        .getByTestId(CONVERSATIONS_SELECTORS.searchConversationButton)
+        .click();
+    }
+
+    await searchConversationInput.fill(searchTerm);
+
+    await expect(
+      this.page
+        .getByTestId(CONVERSATIONS_SELECTORS.conversations)
+        .filter({ hasText: searchTerm })
+    ).toBeVisible();
+  };
+
+  searchConversationViaConversationTitleAndVerify = async ({
+    searchTerm,
+    conversationTitle,
+  }: SearchConversationProps) => {
+    const searchConversationInput = this.page.getByTestId(
+      CONVERSATIONS_SELECTORS.searchConversationTextField
+    );
+    if (!(await searchConversationInput.isVisible())) {
+      await this.page
+        .getByTestId(CONVERSATIONS_SELECTORS.searchConversationButton)
+        .click();
+    }
+
+    await searchConversationInput.fill(searchTerm);
+
+    await expect(
+      this.page
+        .getByTestId(CONVERSATIONS_SELECTORS.conversations)
+        .filter({ hasText: conversationTitle })
+    ).toBeVisible();
+  };
+
+  addTagAndVerify = async (tagName: string) => {
+    await this.page.getByTestId(TAGS_SELECTORS.addTagButton).click();
+    await this.page.getByTestId(TAGS_SELECTORS.tagSearchField).fill(tagName);
+
+    await this.page.getByTestId(COMMON_SELECTORS.selectOption(tagName)).click();
+
+    await expect(this.page.getByTestId(COMMON_SELECTORS.spinner)).toBeHidden();
+    await expect(
+      this.page.getByTestId(TAGS_SELECTORS.tagContainer)
+    ).toContainText(tagName);
+  };
+
+  addTagToContactAndVerify = async (tagName: string, visitorName: string) => {
+    await this.page.getByTestId(NAV_LINKS.contactTab).click();
+    await this.page.getByTestId(COMMON_SELECTORS.inputField).fill(visitorName);
+    await this.neetoPlaywrightUtilities.waitForPageLoad();
+
+    await this.page
+      .getByTestId(CONTACTS_SELECTOR.contactNameField)
+      .filter({ hasText: visitorName })
+      .click();
+
+    await this.addTagAndVerify(tagName);
+  };
+
+  removeTag = async (tagName: string) => {
+    await this.page
+      .getByTestId(TAGS_SELECTORS.tagContainer)
+      .filter({ hasText: tagName })
+      .getByTestId(TAGS_SELECTORS.deleteTagButton)
+      .click();
+    await expect(this.page.getByTestId(COMMON_SELECTORS.spinner)).toBeHidden();
+    await this.page.reload();
+    await this.neetoPlaywrightUtilities.waitForPageLoad();
+  };
+
+  createAndAddCustomTagAndVerify = async (tagName: string) => {
+    await this.page.getByTestId(TAGS_SELECTORS.addTagButton).click();
+    await this.page.getByTestId(TAGS_SELECTORS.tagSearchField).fill(tagName);
+
+    await this.page
+      .getByTestId(COMMON_SELECTORS.dropdownMenu)
+      .filter({ hasText: TAGS.customTag(tagName) })
+      .click();
+
+    await expect(
+      this.page.getByTestId(TAGS_SELECTORS.tagContainer)
+    ).toContainText(tagName);
+  };
+
+  goToChatPage = async () => {
+    await this.page.goto(ROUTES.inbox.open, { waitUntil: "load" });
+    await this.neetoPlaywrightUtilities.waitForPageLoad();
+  };
+}

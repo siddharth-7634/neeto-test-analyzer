@@ -1,0 +1,177 @@
+import { TAGS } from "@constants/texts";
+import { TABLE_TEXTS } from "@constants/texts/settings";
+import { CustomCommands, COMMON_SELECTORS } from "@neetoplaywright";
+import { Page, expect } from "@playwright/test";
+import {
+  SearchContactProps,
+  OpenContactProps,
+  VerifyContactVisibilityProps,
+} from "@poms/types";
+import { CONTACTS_SELECTOR, NAV_LINKS, TAGS_SELECTORS } from "@selectors";
+import { ContactApis } from "apis/contacts";
+import { last, toLower } from "ramda";
+
+export default class ContactsPage {
+  constructor(
+    private page: Page,
+    private neetoPlaywrightUtilities: CustomCommands,
+    private baseURL: string,
+    private timezoneId: string,
+    private contactApis: ContactApis
+  ) {}
+
+  getContactIdFromUrl = () => {
+    const pageUrlParts = this.page.url().split("/");
+
+    return last(pageUrlParts);
+  };
+
+  searchContactName = async ({ contactName }: SearchContactProps) => {
+    await this.page.getByTestId(COMMON_SELECTORS.inputField).fill(contactName);
+    await this.neetoPlaywrightUtilities.waitForPageLoad();
+    await expect(
+      this.page.getByTestId(CONTACTS_SELECTOR.contactNameField)
+    ).toContainText(contactName);
+  };
+
+  navigateToContactsPage = () =>
+    this.page.getByTestId(NAV_LINKS.contactTab).click();
+
+  openContactFromList = async ({ contactName }: OpenContactProps) => {
+    await this.searchContactName({ contactName });
+    await this.page
+      .getByTestId(CONTACTS_SELECTOR.contactNameField)
+      .filter({ hasText: contactName })
+      .click();
+
+    await expect(
+      this.page
+        .getByTestId(COMMON_SELECTORS.heading)
+        .filter({ hasText: contactName })
+    ).toBeVisible({ timeout: 20_000 });
+  };
+
+  addTagAndVerify = async (tagName: string) => {
+    await this.page.getByTestId(TAGS_SELECTORS.addTagButton).click();
+
+    await this.page.getByTestId(TAGS_SELECTORS.tagSearchField).fill(tagName);
+
+    await this.page.getByTestId(COMMON_SELECTORS.selectOption(tagName)).click();
+    await expect(
+      this.page.getByTestId(TAGS_SELECTORS.tagContainer)
+    ).toBeVisible();
+  };
+
+  removeTag = async (tagName: string) => {
+    await this.page
+      .getByTestId(TAGS_SELECTORS.tagContainer)
+      .filter({ hasText: tagName })
+      .getByTestId(TAGS_SELECTORS.deleteTagButton)
+      .click();
+
+    await expect(
+      this.page
+        .getByTestId(TAGS_SELECTORS.tagContainer)
+        .filter({ hasText: tagName })
+    ).toBeHidden();
+    await this.page.reload();
+    await this.neetoPlaywrightUtilities.waitForPageLoad();
+  };
+
+  createAndAddCustomTagAndVerify = async (tagName: string) => {
+    await this.page.getByTestId(TAGS_SELECTORS.addTagButton).click();
+    await this.page.getByTestId(TAGS_SELECTORS.tagSearchField).fill(tagName);
+
+    await this.page
+      .getByTestId(COMMON_SELECTORS.dropdownMenu)
+      .filter({ hasText: TAGS.customTag(tagName) })
+      .click();
+
+    await expect(this.page.getByTestId(TAGS_SELECTORS.tagContainer)).toHaveText(
+      tagName
+    );
+  };
+
+  getVisitorToken = async ({ visitor, isEmail = true }) => {
+    let visitorResponse: { visitor_token: string };
+    visitor = isEmail ? toLower(visitor) : visitor;
+
+    await expect
+      .poll(
+        async () => {
+          visitorResponse = await this.getContact(visitor, isEmail);
+
+          return visitorResponse?.visitor_token;
+        },
+        { timeout: 20_000 }
+      )
+      .toBeDefined();
+
+    return visitorResponse?.visitor_token;
+  };
+
+  getContact = async (property, isEmail = true) => {
+    const contactList = await this.fetchContactsViaRequest();
+
+    return contactList.find(contact =>
+      isEmail ? contact.email === property : contact.name === property
+    );
+  };
+
+  fetchContactsViaRequest = async () => {
+    const params = {
+      json_filter_params: { insight: { page: 1, page_size: 200 } },
+    };
+
+    const apiResponse = await this.contactApis.fetchContacts(params);
+
+    const responseBodyBuffer = await apiResponse.body();
+    const responseBodyString = responseBodyBuffer.toString();
+    const contactsList = JSON.parse(responseBodyString);
+
+    return contactsList.visitors;
+  };
+
+  fetchContactIdsAndDeleteViaRequest = async (contactNames: string[]) => {
+    const contactList = await this.fetchContactsViaRequest();
+    // Reason: We need ids of only those contacts which are part of contactNames.
+    // eslint-disable-next-line consistent-return, array-callback-return
+    const contactIds = contactList.map(contact => {
+      if (contactNames.includes(contact.name)) {
+        return contact.id;
+      }
+    });
+    await this.contactApis.deleteContacts({ contactIds });
+  };
+
+  verifyVisibilityOfContactsInTable = async ({
+    contacts,
+    shouldBeVisible,
+  }: VerifyContactVisibilityProps) => {
+    for (const contact of contacts) {
+      await this.page
+        .getByTestId(COMMON_SELECTORS.inputField)
+        .fill(contact.email);
+      await this.neetoPlaywrightUtilities.waitForPageLoad();
+      const filteredRow = this.page.getByRole("row", {
+        name: `${contact.name} ${contact.email}`,
+      });
+
+      shouldBeVisible
+        ? await expect(filteredRow).toBeVisible()
+        : await expect(filteredRow).toBeHidden();
+    }
+  };
+
+  selectAllContacts = async () => {
+    await this.neetoPlaywrightUtilities.waitForPageLoad();
+
+    const checkBox = this.page.getByRole("checkbox", {
+      name: TABLE_TEXTS.selectAll,
+    });
+
+    await checkBox.click();
+    const isCheckedValue = await checkBox.isChecked();
+    await expect(isCheckedValue).toBe(true);
+  };
+}
