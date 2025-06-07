@@ -4,3 +4,5 @@ node_modules/
 dist/
 build/
 backend2/dist
+backend2/tmp
+backend2/uploads
