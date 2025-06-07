@@ -1,9 +1,0 @@
-------WebKitFormBoundaryFvlrCLKHFnB2WqaI
-Content-Disposition: form-data; name="logs"
-
-[{"tstamp":1748577897434,"event":800019,"args":{"contexts":{"referring_ui_context":{"ui_page":"domain_name","ui_component_variant":"domain_login_email_password","ui_properties":{"element_type":2,"element_name":"domain_name_sign_in"},"action":36},"ui_context":{"entry_point":"workspace_signin","ui_step":"ssb_deeplink_web_fallback","action":1,"ui_page":"https://aquamarineaquarium.slack.com/ssb/redirect?entry_point=workspace_signin"}},"referring_event_id":300329},"user_id":"U06K5ERGRDX","team_id":"T06JC8BFR71","session_id":"2709c3af-9506-4c13-ad8e-7999f0291bb7","i18n_locale":"en-US","sub_app_name":"legacy"}]
-------WebKitFormBoundaryFvlrCLKHFnB2WqaI
-Content-Disposition: form-data; name="o"
-
-client
-------WebKitFormBoundaryFvlrCLKHFnB2WqaI--

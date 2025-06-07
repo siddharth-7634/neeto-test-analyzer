@@ -1,1 +1,0 @@
-[{"name":"new","label":"New","color":"open"},{"name":"open","label":"Open","color":"open"},{"name":"waiting_on_customer","label":"Waiting on customer","color":"waiting"},{"name":"on_hold","label":"On hold","color":"waiting"},{"name":"closed","label":"Closed","color":"done"},{"name":"spam","label":"Spam","color":"done"},{"name":"trash","label":"Trash","color":"done"}]
