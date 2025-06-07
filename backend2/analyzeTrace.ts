@@ -43,7 +43,7 @@ const downloadAndExtractTrace = async (
     .pipe(unzipper.Extract({ path: outputDir }))
     .promise();
 
-  console.log("✅ Trace file downloaded and extracted.");
+  // console.log("✅ Trace file downloaded and extracted.");
 };
 
 const parseTrace = async (outputDir: string): Promise<void> => {
@@ -64,7 +64,7 @@ const parseTrace = async (outputDir: string): Promise<void> => {
   lines.forEach((entry) => {
     if (entry.type) typeSet.add(entry.type);
   });
-  console.log("📌 Distinct trace entry types:", [...typeSet]);
+  // console.log("📌 Distinct trace entry types:", [...typeSet]);
 
   // 2. Find and print last error
   const lastError = [...lines]
@@ -72,14 +72,14 @@ const parseTrace = async (outputDir: string): Promise<void> => {
     .find((entry) => entry.metadata?.error?.message);
 
   if (lastError?.metadata?.error?.message) {
-    console.log("❌ Last Error:", lastError.metadata.error.message);
+    // console.log("❌ Last Error:", lastError.metadata.error.message);
   } else {
-    console.log("✅ No error found in trace.");
+    // console.log("✅ No error found in trace.");
   }
 
   // 3. Optionally print sample entries
-  console.log("\n📄 Sample trace entries:");
-  console.log(JSON.stringify(lines.slice(0, 3), null, 2));
+  // console.log("\n📄 Sample trace entries:");
+  // console.log(JSON.stringify(lines.slice(0, 3), null, 2));
 };
 
 const runAnalysis = async () => {
@@ -88,7 +88,7 @@ const runAnalysis = async () => {
 
     // "https://assets-cdn.neetoplaydash.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6IjhjZjZlODlkLTMyOWUtNGZhNi05MzFiLWYxNTUyYmZmMWQ1MyIsInB1ciI6ImJsb2JfaWQifX0=--66b143d53238626ad69546d63a15a1abe7e5288b/-home-neetoci-neeto-chat-web-playwright-tests-test-results-inbox-conversations-Inbox--fa890-add-edit-from-right-sidebar-chromium-retry1-trace.zip";
 
-    "https://assets-cdn.neetoplaydash.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6ImFlNDgzYWI0LWE2ZjMtNDQ2Yi04MmYzLWRmMzBmZTU5MTRmYyIsInB1ciI6ImJsb2JfaWQifX0=--8f3077b1a1526aad7366f54d9b8d71118186a5bf/-home-neetoci-neeto-chat-web-playwright-tests-test-results-inbox-conversationViews-In-7a663--filter-closed-conversation-chromium-retry1-trace.zip"
+    "https://assets-cdn.neetoplaydash.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6ImFlNDgzYWI0LWE2ZjMtNDQ2Yi04MmYzLWRmMzBmZTU5MTRmYyIsInB1ciI6ImJsb2JfaWQifX0=--8f3077b1a1526aad7366f54d9b8d71118186a5bf/-home-neetoci-neeto-chat-web-playwright-tests-test-results-inbox-conversationViews-In-7a663--filter-closed-conversation-chromium-retry1-trace.zip";
 
   const outputDir = path.join(__dirname, "trace-extracted");
 

@@ -78,12 +78,6 @@
 //   }
 // };
 
-
-
-
-
-
-
 import axios from "axios";
 
 export interface TraceContext {
@@ -104,28 +98,28 @@ interface DeepseekResult {
 export const getDeepseekExplanation = async (
   context: TraceContext
 ): Promise<DeepseekResult> => {
-//   const prompt = `
-// You are a Playwright test assistant.
+  //   const prompt = `
+  // You are a Playwright test assistant.
 
-// Analyze this test failure and return the root cause and a simple fix.
+  // Analyze this test failure and return the root cause and a simple fix.
 
-// Format your output JSON like:
-// {
-//   "reason": "...",
-//   "fix": "...",
-//   "summaryText": "🔴 *Test Failed*: ${
-//     context.testName
-//   }\\n🧩 *Reason*: ...\\n💡 *Fix*: ..."
-// }
+  // Format your output JSON like:
+  // {
+  //   "reason": "...",
+  //   "fix": "...",
+  //   "summaryText": "🔴 *Test Failed*: ${
+  //     context.testName
+  //   }\\n🧩 *Reason*: ...\\n💡 *Fix*: ..."
+  // }
 
-// Test: ${context.testName}
-// Error: ${context.error}
+  // Test: ${context.testName}
+  // Error: ${context.error}
 
-// Context:
-// ${context.traceContext.join("\n")}
-// `;
+  // Context:
+  // ${context.traceContext.join("\n")}
+  // `;
 
-const prompt = `
+  const prompt = `
 You are a Playwright test failure analysis assistant.
 
 Given the test failure name, error message, and trace logs including network requests and other metadata, analyze the failure and determine:
@@ -140,7 +134,9 @@ Format your answer as JSON like:
 {
   "reason": "Explain the root cause in simple terms",
   "fix": "Provide actionable fixes or next steps",
-  "summaryText": "🔴 *Test Failed*: ${context.testName}\\n🧩 *Reason*: ...\\n💡 *Fix*: ..."
+  "summaryText": "🔴 *Test Failed*: ${
+    context.testName
+  }\\n🧩 *Reason*: ...\\n💡 *Fix*: ..."
 }
 
 Test: ${context.testName}
@@ -191,12 +187,6 @@ ${context.traceContext.join("\n")}
     };
   }
 };
-
-
-
-
-
-
 
 // import axios from "axios";
 
@@ -273,9 +263,9 @@ ${context.traceContext.join("\n")}
 //     let raw = response.data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
 
 //     // CRITICAL: Log the raw response to see what Gemini is actually sending
-//     console.log("-----------RAW RESPONSE FROM GEMINI START-----------");
-//     console.log(raw);
-//     console.log("-----------RAW RESPONSE FROM GEMINI END-----------");
+//     // console.log("-----------RAW RESPONSE FROM GEMINI START-----------");
+//     // console.log(raw);
+//     // console.log("-----------RAW RESPONSE FROM GEMINI END-----------");
 
 //     // With responseMimeType: "application/json", complex cleanup might not be needed.
 //     // However, it's good to keep a simple trim.
@@ -325,12 +315,6 @@ ${context.traceContext.join("\n")}
 //     };
 //   }
 // };
-
-
-
-
-
-
 
 // import axios from "axios";
 

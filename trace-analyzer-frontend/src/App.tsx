@@ -12,7 +12,7 @@ const ANALYZER_BACKEND_URL =
 const NEETO_PLAYDASH_API_KEY = import.meta.env.VITE_NEETO_PLAYDASH_API_KEY;
 // --- Type Definitions ---
 interface NeetoTestEntity {
-    id: string;
+  id: string;
   title: string;
   sid: string; // from your data
   project: string; // from your data
@@ -170,7 +170,7 @@ function App() {
       for (let i = 0; i < failedTests.length; i++) {
         const failedTest = failedTests[i];
         const currentTestShortId = failedTest.sid; // Use the short 'sid' for URL and matching
-        const testTitle = failedTest.title; 
+        const testTitle = failedTest.title;
 
         const updateTestStatus = (
           status: DisplayableAnalysisResult["status"],
@@ -187,7 +187,9 @@ function App() {
           );
         };
 
-        addStatus(`Processing failed test: ${testTitle} (SID: ${currentTestShortId})`);
+        addStatus(
+          `Processing failed test: ${testTitle} (SID: ${currentTestShortId})`
+        );
         updateTestStatus("fetching_trace");
 
         try {
@@ -215,7 +217,7 @@ function App() {
             await singleTestResponse.json();
 
           // DEBUG: Log the structure of singleTestData
-          console.log("DEBUG: singleTestData received from proxy:", JSON.stringify(singleTestData, null, 2));
+          // console.log("DEBUG: singleTestData received from proxy:", JSON.stringify(singleTestData, null, 2));
 
           // CRITICAL: Check the structure of singleTestData
           if (
@@ -240,14 +242,21 @@ function App() {
 
           if (outcomes.length > 0) {
             const lastOutcome = outcomes[outcomes.length - 1];
-            if (lastOutcome.attempts && Array.isArray(lastOutcome.attempts) && lastOutcome.attempts.length > 0) {
+            if (
+              lastOutcome.attempts &&
+              Array.isArray(lastOutcome.attempts) &&
+              lastOutcome.attempts.length > 0
+            ) {
               const firstAttemptOfLastOutcome = lastOutcome.attempts[0];
-              if (firstAttemptOfLastOutcome.traces && Array.isArray(firstAttemptOfLastOutcome.traces) && firstAttemptOfLastOutcome.traces.length > 0) {
+              if (
+                firstAttemptOfLastOutcome.traces &&
+                Array.isArray(firstAttemptOfLastOutcome.traces) &&
+                firstAttemptOfLastOutcome.traces.length > 0
+              ) {
                 selectedTraceUrl = firstAttemptOfLastOutcome.traces[0]; // Take the first trace from the first attempt of the last outcome
               }
             }
           }
-
 
           if (!selectedTraceUrl) {
             addStatus(`No traces found for test ${testTitle}.`);
@@ -257,7 +266,7 @@ function App() {
             );
             continue;
           }
-          
+
           // The user requested to use the 0th index element from attempts.
           // The logic above now selects the first trace from the first attempt of the last outcome.
           // We no longer search for "retry1".
@@ -319,13 +328,29 @@ function App() {
             );
           }
           const analysisData = await analysisApiResponse.json();
+          // DEBUG: Log the data received from the /analyze endpoint
+          console.log("DEBUG: analysisData from /analyze backend:", JSON.stringify(analysisData, null, 2));
 
           if (analysisData.result) {
-            addStatus(`Analysis complete for ${testTitle}.`);
-            updateTestStatus("completed", undefined, analysisData.result);
+            // analysisData.result is an array of BackendAnalysisResult objects.
+            // For a single trace file analysis, we expect one result if an error was found and analyzed.
+            if (Array.isArray(analysisData.result) && analysisData.result.length > 0 && analysisData.result[0]) {
+              // The first element of the array IS the analysis result.
+              const mainAnalysis: BackendAnalysisResult = analysisData.result[0];
+              addStatus(`Analysis complete for ${testTitle}.`);
+              updateTestStatus("completed", undefined, mainAnalysis);
+            } else {
+              // This case handles if analysisData.result is an empty array or items are malformed.
+              console.error("DEBUG: analysisData.result was not a non-empty array or first item was falsy", analysisData.result);
+              // Handle cases where the structure is not as expected or explanation is missing
+              addStatus(`Analysis for ${testTitle} returned an unexpected result structure.`);
+              updateTestStatus("analysis_failed", "Malformed analysis data from server.");
+            }
           } else {
             addStatus(
-              `Analysis for ${testTitle} returned no specific result: ${analysisData.message}`
+              `Analysis for ${testTitle} returned no specific result or explanation: ${
+                analysisData.message || "Unknown reason"
+              }`
             );
             updateTestStatus(
               "analysis_failed",
@@ -470,9 +495,22 @@ function App() {
                   )}
 
                   {result.status === "completed" && result.analysis && (
-                    <pre className="bg-gray-800 p-3 rounded-md text-sm text-gray-200 whitespace-pre-wrap overflow-x-auto border border-gray-600">
-                      {result.analysis.summaryText}
-                    </pre>
+                    <div className="mt-3 space-y-2 text-left">
+                      <div>
+                        <strong className="text-sky-400">Summary:</strong>
+                        <pre className="mt-1 bg-gray-800 p-3 rounded-md text-sm text-gray-200 whitespace-pre-wrap overflow-x-auto border border-gray-600">
+                          {result.analysis.summaryText}
+                        </pre>
+                      </div>
+                      {/* <div>
+                        <strong className="text-sky-400">Reason:</strong>
+                        <p className="mt-1 text-sm text-gray-300">{result.analysis.reason}</p>
+                      </div>
+                      <div>
+                        <strong className="text-sky-400">Suggested Fix:</strong>
+                        <p className="mt-1 text-sm text-gray-300">{result.analysis.fix}</p>
+                      </div> */}
+                    </div>
                   )}
                   {result.errorMessage && (
                     <p className="mt-2 text-sm text-red-300 bg-red-900 p-2 rounded-md">

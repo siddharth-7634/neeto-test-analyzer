@@ -19,16 +19,14 @@ router.get(
 
     // Prioritize session cookie if that's what Postman indicates is primary
     if (!NEETO_PLAYDASH_SESSION_COOKIE) {
-      return res
-        .status(500)
-        .json({
-          error: "NeetoPlayDash session cookie not configured on server.",
-        });
+      return res.status(500).json({
+        error: "NeetoPlayDash session cookie not configured on server.",
+      });
     }
 
     try {
       const targetUrl = `${NEETO_PLAYDASH_API_BASE}/projects/${projectSid}/runs/${runSid}/test_entities?kind=${kind}`;
-    //   console.log(`Proxying request to: ${targetUrl}`); // Log the target URL
+      //   // console.log(`Proxying request to: ${targetUrl}`); // Log the target URL
 
       // NEETO_PLAYDASH_SESSION_COOKIE is guaranteed to be present here due to the check above.
       const headers: Record<string, string> = {
@@ -38,17 +36,17 @@ router.get(
       // If the API key is also required in conjunction with the cookie, uncomment this.
       // if (NEETO_PLAYDASH_API_KEY) {
       //   headers['Authorization'] = `Bearer ${NEETO_PLAYDASH_API_KEY}`;
-      //   console.log("DEBUG: Adding Authorization header with API Key."); // For debugging
+      //   // console.log("DEBUG: Adding Authorization header with API Key."); // For debugging
       // }
 
       // Log the headers that will be sent
-      console.log("Sending headers to NeetoPlayDash:", JSON.stringify(headers, null, 2));
+      // console.log("Sending headers to NeetoPlayDash:", JSON.stringify(headers, null, 2));
 
       const apiResponse = await axios.get(targetUrl, {
         headers: headers,
       });
       // Log the actual data received from NeetoPlayDash API
-      console.log("Data received from NeetoPlayDash API:", JSON.stringify(apiResponse.data, null, 2));
+      // console.log("Data received from NeetoPlayDash API:", JSON.stringify(apiResponse.data, null, 2));
 
       res.json(apiResponse.data);
     } catch (error: any) {
@@ -71,16 +69,14 @@ router.get(
     const { projectSid, runSid, testEntitySid } = req.params;
 
     if (!NEETO_PLAYDASH_SESSION_COOKIE) {
-      return res
-        .status(500)
-        .json({
-          error: "NeetoPlayDash session cookie not configured on server.",
-        });
+      return res.status(500).json({
+        error: "NeetoPlayDash session cookie not configured on server.",
+      });
     }
 
     try {
       const targetUrl = `${NEETO_PLAYDASH_API_BASE}/projects/${projectSid}/runs/${runSid}/test_entities/${testEntitySid}`;
-      console.log(`Proxying SINGLE ENTITY request to: ${targetUrl}`); // Log the target URL
+      // console.log(`Proxying SINGLE ENTITY request to: ${targetUrl}`); // Log the target URL
 
       const headers: Record<string, string> = {
         Cookie: NEETO_PLAYDASH_SESSION_COOKIE,
@@ -88,18 +84,21 @@ router.get(
 
       // if (NEETO_PLAYDASH_API_KEY) {
       //   headers['Authorization'] = `Bearer ${NEETO_PLAYDASH_API_KEY}`;
-      //   console.log("DEBUG: Adding Authorization header with API Key for single entity.");
+      //   // console.log("DEBUG: Adding Authorization header with API Key for single entity.");
       // }
 
-      console.log("Sending headers to NeetoPlayDash (single entity):", JSON.stringify(headers, null, 2));
+      // console.log("Sending headers to NeetoPlayDash (single entity):", JSON.stringify(headers, null, 2));
 
       const apiResponse = await axios.get(targetUrl, {
         headers: headers,
       });
-      console.log("Data received from NeetoPlayDash API (single entity):", JSON.stringify(apiResponse.data, null, 2));
+      // console.log("Data received from NeetoPlayDash API (single entity):", JSON.stringify(apiResponse.data, null, 2));
       res.json(apiResponse.data);
     } catch (error: any) {
-      console.error("Error proxying to NeetoPlayDash (single entity):", error.response?.data || error.message);
+      console.error(
+        "Error proxying to NeetoPlayDash (single entity):",
+        error.response?.data || error.message
+      );
       res.status(error.response?.status || 500).json({
         error: "Failed to fetch single test entity data from NeetoPlayDash",
         details: error.response?.data,
