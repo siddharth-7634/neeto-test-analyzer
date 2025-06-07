@@ -7,7 +7,7 @@ dotenv.config();
 
 const router = express.Router();
 const NEETO_PLAYDASH_API_BASE =
-  "https://automationbinary.neetoplaydash.net/api/v1";
+  "https://automationbinary.neetoplaydash.com/api/v1";
 const NEETO_PLAYDASH_API_KEY = process.env.NEETO_PLAYDASH_API_KEY; // From your backend .env
 const NEETO_PLAYDASH_SESSION_COOKIE = process.env.NEETO_PLAYDASH_SESSION_COOKIE; // From your backend .env
 
@@ -28,7 +28,7 @@ router.get(
 
     try {
       const targetUrl = `${NEETO_PLAYDASH_API_BASE}/projects/${projectSid}/runs/${runSid}/test_entities?kind=${kind}`;
-      console.log(`Proxying request to: ${targetUrl}`); // Log the target URL
+    //   console.log(`Proxying request to: ${targetUrl}`); // Log the target URL
 
       // NEETO_PLAYDASH_SESSION_COOKIE is guaranteed to be present here due to the check above.
       const headers: Record<string, string> = {

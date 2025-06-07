@@ -27,14 +27,24 @@ interface NeetoTestEntitiesResponse {
   total_count?: number; // Optional: if you want to use this later
 }
 
+interface TestAttempt {
+  traces?: string[];
+  // ... other attempt properties if needed (e.g., status, duration)
+}
+
+interface TestOutcome {
+  status: string;
+  attempts: TestAttempt[]; // Each outcome has an array of attempts
+  // ... other outcome properties if needed
+}
+
 interface NeetoSingleTestEntityResponse {
-  data: {
-    id: string;
-    attributes: {
-      title: string;
-      traces?: string[];
-    };
+  test: {
+    title: string;
+    outcomes: TestOutcome[];
+    // ... other properties from the "test" object if needed (e.g., sid, id)
   };
+  project?: string; // Optional, from the root
 }
 
 interface BackendAnalysisResult {
@@ -204,20 +214,42 @@ function App() {
           const singleTestData: NeetoSingleTestEntityResponse =
             await singleTestResponse.json();
 
+          // DEBUG: Log the structure of singleTestData
+          console.log("DEBUG: singleTestData received from proxy:", JSON.stringify(singleTestData, null, 2));
+
           // CRITICAL: Check the structure of singleTestData
           if (
             !singleTestData ||
-            !singleTestData.data ||
-            !singleTestData.data.attributes
+            !singleTestData.test || // Check if 'test' object exists
+            !Array.isArray(singleTestData.test.outcomes) // Check if 'outcomes' is an array
           ) {
+            console.error(
+              "Malformed singleTestData: 'test' object or 'test.outcomes' array is missing or not an array.",
+              singleTestData
+            );
             updateTestStatus(
               "error",
               "Received malformed data for single test details."
             );
             continue; // Skip to the next test
           }
-          const traces = singleTestData.data.attributes.traces;
-          if (!traces || traces.length === 0) {
+
+          // Get traces from the first attempt of the last outcome
+          let selectedTraceUrl: string | undefined;
+          const outcomes = singleTestData.test.outcomes;
+
+          if (outcomes.length > 0) {
+            const lastOutcome = outcomes[outcomes.length - 1];
+            if (lastOutcome.attempts && Array.isArray(lastOutcome.attempts) && lastOutcome.attempts.length > 0) {
+              const firstAttemptOfLastOutcome = lastOutcome.attempts[0];
+              if (firstAttemptOfLastOutcome.traces && Array.isArray(firstAttemptOfLastOutcome.traces) && firstAttemptOfLastOutcome.traces.length > 0) {
+                selectedTraceUrl = firstAttemptOfLastOutcome.traces[0]; // Take the first trace from the first attempt of the last outcome
+              }
+            }
+          }
+
+
+          if (!selectedTraceUrl) {
             addStatus(`No traces found for test ${testTitle}.`);
             updateTestStatus(
               "no_retry_trace",
@@ -225,25 +257,16 @@ function App() {
             );
             continue;
           }
-
-          const retry1TraceUrl = traces.find((traceUrl) =>
-            traceUrl.includes("retry1")
-          );
-          if (!retry1TraceUrl) {
-            addStatus(
-              `No 'retry1' trace found for test ${testTitle}. Available: ${traces.join(
-                ", "
-              )}`
-            );
-            updateTestStatus("no_retry_trace", 'No "retry1" trace found.');
-            continue;
-          }
-          addStatus(`Found 'retry1' trace for ${testTitle}: ${retry1TraceUrl}`);
+          
+          // The user requested to use the 0th index element from attempts.
+          // The logic above now selects the first trace from the first attempt of the last outcome.
+          // We no longer search for "retry1".
+          addStatus(`Using trace for ${testTitle}: ${selectedTraceUrl}`);
           updateTestStatus(
             "fetching_trace",
             undefined,
             undefined,
-            retry1TraceUrl
+            selectedTraceUrl
           );
 
           // Step 3: Fetch the trace.zip file
@@ -252,7 +275,7 @@ function App() {
           // A backend proxy might be needed for this step in a production environment.
           // This URL is still direct, as it's to assets-cdn, not the main API.
           // If this also causes CORS, it would need its own proxy or different handling.
-          const traceFileResponse = await fetch(retry1TraceUrl, {
+          const traceFileResponse = await fetch(selectedTraceUrl, {
             // credentials: 'include', // Usually not needed for public CDNs; could cause issues if CDN CORS isn't set for credentials
             // headers: NEETO_PLAYDASH_API_KEY ? { 'Authorization': `Bearer ${NEETO_PLAYDASH_API_KEY}` } : {} // Potentially remove or adjust
           });
@@ -273,7 +296,7 @@ function App() {
           const formData = new FormData();
           // Extract filename from URL or use a generic one
           const traceFilename =
-            retry1TraceUrl.substring(retry1TraceUrl.lastIndexOf("/") + 1) ||
+            selectedTraceUrl.substring(selectedTraceUrl.lastIndexOf("/") + 1) ||
             "trace.zip";
           formData.append(
             "file",
