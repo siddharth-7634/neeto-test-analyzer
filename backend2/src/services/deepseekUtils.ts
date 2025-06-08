@@ -88,7 +88,7 @@ export interface TraceContext {
 }
 
 interface DeepseekResult {
-  testName: string;
+  // testName: string;
   error: string;
   reason: string;
   fix: string;
@@ -170,7 +170,7 @@ ${context.traceContext.join("\n")}
     const parsed = JSON.parse(raw);
 
     return {
-      testName: context.testName,
+      // testName: context.testName,
       error: context.error,
       reason: parsed.reason ?? "Unknown reason",
       fix: parsed.fix ?? "No fix provided",
@@ -179,7 +179,7 @@ ${context.traceContext.join("\n")}
   } catch (error: any) {
     console.error("🧠 Deepseek error:", error.response?.data || error.message);
     return {
-      testName: context.testName,
+      // testName: context.testName,
       error: context.error,
       reason: "Failed to analyze error.",
       fix: "Try rerunning the test or improving trace context.",
